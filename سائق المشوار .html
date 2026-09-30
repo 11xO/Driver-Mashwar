@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>سائق مشوار</title>
+<meta name="theme-color" content="#8b5cf6">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3063/3063822.png">
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3063/3063822.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#8b5cf6;--primary-dark:#7c3aed;--primary-glow:rgba(139,92,246,.5);--secondary:#06b6d4;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--pink:#ec4899;--bg-deep:#090d16;--card:rgba(28,36,58,.7);--border:rgba(255,255,255,.1);--border-active:rgba(139,92,246,.4);--text:#f1f5f9;--text-soft:#cbd5e1;--text-muted:#94a3b8;--text-dim:#64748b}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(139,92,246,.15) 0,transparent 40%),radial-gradient(circle at 90% 100%,rgba(6,182,212,.12) 0,transparent 40%);color:var(--text);min-height:100vh;padding-bottom:120px}
+
+/* Splash */
+.splash{position:fixed;inset:0;background:linear-gradient(135deg,#090d16,#1e1b4b);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity .5s,visibility .5s}
+.splash.hide{opacity:0;visibility:hidden}
+.splash-logo{width:110px;height:110px;border-radius:32px;background:linear-gradient(135deg,#8b5cf6,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:50px;color:#fff;box-shadow:0 0 60px rgba(139,92,246,.5);animation:sp 1.5s ease-in-out infinite}
+@keyframes sp{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.splash-title{margin-top:25px;font-size:26px;font-weight:900;background:linear-gradient(90deg,#a78bfa,#22d3ee,#a78bfa);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sh 2s linear infinite}
+@keyframes sh{to{background-position:200% center}}
+.splash-sub{margin-top:8px;font-size:12px;color:var(--text-muted);letter-spacing:3px}
+
+/* Login */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{width:100%;max-width:420px;background:linear-gradient(160deg,rgba(30,41,59,.85),rgba(15,23,42,.95));backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.1);border-radius:32px;padding:40px 28px 32px;box-shadow:0 30px 60px rgba(0,0,0,.6);animation:ci .6s cubic-bezier(.16,1,.3,1)}
+@keyframes ci{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{width:75px;height:75px;border-radius:24px;background:linear-gradient(135deg,#8b5cf6,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff;margin:0 auto 20px;box-shadow:0 10px 30px rgba(139,92,246,.5)}
+.login-title{text-align:center;font-size:24px;font-weight:900;color:#fff;margin-bottom:6px}
+.login-sub{text-align:center;font-size:12.5px;color:var(--text-muted);margin-bottom:28px}
+.inp-wrap{position:relative;margin:12px 0}
+.inp-wrap>i{position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none}
+.inp-wrap input{width:100%;padding:15px 48px 15px 20px;background:rgba(10,15,28,.75);border:1.5px solid var(--border);border-radius:14px;color:#fff;font-size:14px;outline:none;font-family:'Cairo',sans-serif}
+.inp-wrap input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(139,92,246,.15)}
+.area-trigger-btn{width:100%;padding:15px 48px 15px 20px;background:rgba(10,15,28,.75);border:1.5px solid var(--border);border-radius:14px;color:var(--text-muted);font-size:14px;text-align:right;cursor:pointer;font-family:'Cairo',sans-serif}
+.area-trigger-btn.filled{color:#fff;border-color:var(--primary);background:rgba(139,92,246,.1)}
+.btn-main{width:100%;padding:16px;border:none;border-radius:14px;font-size:15px;font-weight:900;color:#fff;cursor:pointer;font-family:'Cairo',sans-serif;background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 12px 25px rgba(139,92,246,.45);display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px}
+.btn-main:active{transform:scale(.98)}
+
+/* Header */
+.app-header{position:relative;padding:16px 20px 18px;margin-bottom:10px;background:linear-gradient(160deg,rgba(139,92,246,.25) 0,rgba(6,182,212,.12) 50%,transparent 100%);border-bottom-left-radius:32px;border-bottom-right-radius:32px;overflow:hidden}
+.header-row{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.user-avatar{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--primary),var(--pink));display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;font-weight:900;border:2px solid rgba(255,255,255,.15);flex-shrink:0}
+.user-text{flex:1;min-width:0}
+.user-greet-line{font-size:11px;color:var(--text-muted);margin-bottom:3px}
+.user-name-line{font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.role-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:14px;font-size:10.5px;font-weight:900;color:#fff}
+.user-location-line{font-size:11.5px;color:var(--text-soft);margin-top:4px;display:flex;align-items:center;gap:5px}
+.user-location-line i{color:var(--warning);font-size:10px}
+.notif-btn{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid var(--border);color:#fff;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;transition:.2s}
+.notif-btn:active{transform:scale(.93)}
+.notif-btn.has-new{background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.5);animation:bellShake 1s infinite}
+@keyframes bellShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+.notif-btn .badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;border:2px solid #090d16}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:20px}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;text-align:center}
+.stat-box i{font-size:20px;display:block;margin-bottom:6px}
+.stat-box .sv{font-size:20px;font-weight:900;color:#fff;line-height:1.2}
+.stat-box .sl{font-size:10.5px;color:var(--text-muted);font-weight:600;margin-top:3px}
+
+/* Wallet Mini */
+.wallet-mini{margin:15px 20px;padding:16px 18px;border-radius:20px;background:linear-gradient(135deg,#8b5cf6 0,#06b6d4 100%);display:flex;align-items:center;gap:12px;box-shadow:0 15px 30px rgba(139,92,246,.35);position:relative;overflow:hidden;cursor:pointer}
+.wallet-mini::before{content:'';position:absolute;top:-50%;right:-30%;width:180px;height:180px;background:radial-gradient(circle,rgba(255,255,255,.25),transparent 70%);border-radius:50%}
+.wallet-mini-icon{width:50px;height:50px;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;border:1.5px solid rgba(255,255,255,.3);flex-shrink:0;position:relative;z-index:1}
+.wallet-mini-info{flex:1;position:relative;z-index:1}
+.wallet-mini-label{font-size:10.5px;color:rgba(255,255,255,.85);font-weight:700}
+.wallet-mini-value{font-size:24px;font-weight:900;color:#fff;line-height:1.1}
+.wallet-mini-value small{font-size:12px;font-weight:700;color:rgba(255,255,255,.85)}
+
+/* Section */
+.section{padding:0 20px;margin-bottom:18px}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.section-title{font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:8px}
+.section-title i{width:28px;height:28px;background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(6,182,212,.15));border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:13px}
+.section-count{background:rgba(16,185,129,.15);color:#34d399;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:900;border:1px solid rgba(16,185,129,.3)}
+
+/* Order Card */
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.order-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--oc,#8b5cf6)}
+.order-card.new-order{border-color:rgba(16,185,129,.4);animation:pulseNew 2s infinite}
+@keyframes pulseNew{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 8px rgba(16,185,129,0)}}
+.order-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:10px}
+.order-type-block{display:flex;align-items:center;gap:10px;flex:1}
+.order-icon{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;background:var(--oc,#8b5cf6);flex-shrink:0}
+.order-info{flex:1}
+.order-type-name{font-size:14px;font-weight:900;color:#fff}
+.order-time-small{font-size:10.5px;color:var(--text-muted);margin-top:2px}
+.order-price-big{text-align:left}
+.order-price-num{font-size:19px;font-weight:900;color:var(--success);line-height:1}
+.order-price-label{font-size:10px;color:var(--text-muted);margin-top:2px}
+.order-detail-row{font-size:12.5px;color:var(--text-soft);padding:6px 0;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.order-detail-row i{color:var(--primary);font-size:11px;margin-top:4px;flex-shrink:0}
+.order-detail-row b{color:#fff;font-weight:700}
+.order-details-box{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:12px;color:#fde047;line-height:1.7;white-space:pre-wrap}
+.order-actions{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.btn-action{width:100%;padding:13px;border:none;border-radius:12px;font-weight:900;font-size:13px;cursor:pointer;font-family:'Cairo',sans-serif;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;text-decoration:none}
+.btn-action:active{transform:scale(.97)}
+.btn-accept{background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 8px 20px rgba(16,185,129,.35)}
+.btn-finish{background:linear-gradient(135deg,#7c3aed,#8b5cf6);box-shadow:0 8px 20px rgba(139,92,246,.35)}
+.btn-call{background:linear-gradient(135deg,#0ea5e9,#0284c7)}
+.btn-row{display:grid;grid-template-columns:1fr;gap:8px}
+.btn-sm{padding:11px;font-size:12px}
+.status-badge{padding:5px 12px;border-radius:20px;font-size:10.5px;font-weight:900;display:inline-flex;align-items:center;gap:5px}
+.status-active{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.4)}
+.status-done{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.4)}
+.empty-state{text-align:center;padding:60px 30px;color:var(--text-muted)}
+.empty-state i{font-size:60px;color:rgba(139,92,246,.3);margin-bottom:15px;display:block}
+.empty-state p{font-size:13px;line-height:1.8}
+
+/* Bottom Nav */
+.bottom-nav{position:fixed;bottom:12px;left:12px;right:12px;height:74px;background:rgba(40,50,75,.88);backdrop-filter:blur(35px);border:1px solid rgba(255,255,255,.12);border-radius:22px;display:flex;align-items:center;justify-content:space-around;padding:0 8px;z-index:1000}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:8px 4px;font-family:'Cairo',sans-serif;position:relative}
+.nav-btn i{font-size:20px}
+.nav-btn span{font-size:10.5px;font-weight:800}
+.nav-btn[data-color="home"] i,.nav-btn[data-color="home"] span{color:#a78bfa}
+.nav-btn[data-color="orders"] i,.nav-btn[data-color="orders"] span{color:#22d3ee}
+.nav-btn[data-color="wallet"] i,.nav-btn[data-color="wallet"] span{color:#fbbf24}
+.nav-btn[data-color="profile"] i,.nav-btn[data-color="profile"] span{color:#34d399}
+.nav-btn:not(.active) i,.nav-btn:not(.active) span{opacity:.55}
+.nav-btn.active i{transform:translateY(-2px);opacity:1}
+.nav-btn.active span{opacity:1;font-weight:900}
+.nav-btn .badge-num{position:absolute;top:4px;right:25%;background:var(--danger);color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;box-shadow:0 0 8px rgba(239,68,68,.6)}
+.nav-btn.active::before{content:'';position:absolute;top:-1px;width:32px;height:3px;border-radius:0 0 4px 4px}
+.nav-btn[data-color="home"].active::before{background:#a78bfa;box-shadow:0 0 12px rgba(167,139,250,.8)}
+.nav-btn[data-color="orders"].active::before{background:#22d3ee;box-shadow:0 0 12px rgba(34,211,238,.8)}
+.nav-btn[data-color="wallet"].active::before{background:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.8)}
+.nav-btn[data-color="profile"].active::before{background:#34d399;box-shadow:0 0 12px rgba(52,211,153,.8)}
+
+/* Pages */
+.page{display:none;animation:pi .35s cubic-bezier(.16,1,.3,1)}
+.page.active{display:block}
+@keyframes pi{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+
+/* Sub Tabs */
+.sub-tabs{display:flex;gap:6px;background:rgba(10,15,28,.6);border:1px solid var(--border);border-radius:14px;padding:5px;margin:0 20px 15px}
+.sub-tab{flex:1;padding:10px 8px;border:none;background:transparent;color:var(--text-muted);font-weight:700;font-size:12px;cursor:pointer;border-radius:10px;font-family:'Cairo',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
+.sub-tab.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff}
+
+/* Wallet */
+.wallet-big-card{margin:15px 20px;padding:22px;border-radius:24px;background:linear-gradient(135deg,#f59e0b,#d97706);position:relative;overflow:hidden;box-shadow:0 20px 40px rgba(245,158,11,.35)}
+.wallet-big-card::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,255,255,.25),transparent 70%);border-radius:50%}
+.wallet-big-label{font-size:11px;color:rgba(255,255,255,.9);font-weight:700;position:relative;z-index:1}
+.wallet-big-value{font-size:36px;font-weight:900;color:#fff;line-height:1.1;margin-top:6px;position:relative;z-index:1}
+.wallet-big-value small{font-size:14px;font-weight:700}
+.wallet-big-note{font-size:11.5px;color:rgba(255,255,255,.85);margin-top:8px;position:relative;z-index:1;line-height:1.6}
+.wallet-row{margin:0 20px 12px;padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.wallet-row-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0}
+.wallet-row-info{flex:1;margin-right:12px}
+.wallet-row-label{font-size:13px;font-weight:900;color:#fff}
+.wallet-row-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.wallet-row-value{font-size:17px;font-weight:900;color:var(--success)}
+.wallet-row-value.debt{color:#fbbf24}
+
+/* Profile */
+.profile-card{margin:15px 20px 20px;background:linear-gradient(160deg,rgba(139,92,246,.2),rgba(6,182,212,.1));border:1px solid rgba(139,92,246,.35);border-radius:24px;padding:24px;text-align:center}
+.profile-avatar{width:80px;height:80px;border-radius:26px;background:linear-gradient(135deg,var(--primary),var(--pink));display:flex;align-items:center;justify-content:center;font-size:34px;color:#fff;font-weight:900;margin:0 auto 14px;border:3px solid rgba(255,255,255,.15)}
+.profile-name{font-size:20px;font-weight:900;color:#fff}
+.profile-phone{font-size:12.5px;color:var(--text-muted);margin-top:4px;direction:ltr}
+.profile-area{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--warning);font-weight:700;margin-top:12px}
+.profile-list{margin:0 20px;background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.profile-list-item{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;border-bottom:1px solid var(--border);background:none;border-left:none;border-right:none;border-top:none;width:100%;color:inherit;text-align:right;font-size:13.5px;font-weight:700;font-family:'Cairo',sans-serif}
+.profile-list-item:last-child{border-bottom:none}
+.pli-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0}
+.pli-text{flex:1;text-align:right}
+.pli-text small{display:block;font-size:11px;color:var(--text-muted);font-weight:500;margin-top:2px}
+.profile-list-item>i.fa-chevron-left{color:var(--text-dim);font-size:12px}
+
+/* Modals */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:5000;opacity:0;visibility:hidden;transition:.3s}
+.modal-overlay.show{opacity:1;visibility:visible}
+.center-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(160deg,rgba(30,40,60,.98),rgba(15,23,42,1));border:1.5px solid var(--border-active);border-radius:24px;z-index:5001;width:calc(100% - 40px);max-width:420px;max-height:80vh;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:all .3s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 60px rgba(0,0,0,.6)}
+.center-modal.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+.center-modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.center-modal-icon{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;background:linear-gradient(135deg,var(--secondary),#0891b2);flex-shrink:0}
+.center-modal-title{font-size:16px;font-weight:900;color:#fff}
+.center-modal-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.center-modal-close{margin-right:auto;width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-size:13px}
+.center-modal-body{padding:14px;overflow-y:auto;flex:1;max-height:60vh}
+.area-item{padding:14px 16px;background:rgba(10,15,28,.6);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:8px;transition:.2s}
+.area-item:hover{background:rgba(139,92,246,.15);border-color:var(--primary)}
+.area-item.selected{background:rgba(139,92,246,.2);border-color:var(--primary);box-shadow:0 0 0 2px rgba(139,92,246,.2)}
+.area-item-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;background:linear-gradient(135deg,var(--primary),#7c3aed);flex-shrink:0}
+.area-item-name{flex:1;font-weight:700;color:#fff;font-size:14px}
+.area-item-check{color:var(--success);font-size:18px}
+.confirm-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(160deg,rgba(30,40,60,.98),rgba(15,23,42,1));border:1.5px solid var(--border-active);border-radius:24px;z-index:5001;width:calc(100% - 40px);max-width:400px;opacity:0;visibility:hidden;transition:all .3s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 60px rgba(0,0,0,.6);padding:25px 20px;text-align:center}
+.confirm-modal.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+.confirm-icon{width:70px;height:70px;border-radius:24px;background:linear-gradient(135deg,var(--warning),#d97706);display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin:0 auto 18px}
+.confirm-title{font-size:19px;font-weight:900;color:#fff;margin-bottom:10px}
+.confirm-msg{font-size:13px;color:var(--text-soft);line-height:1.8;margin-bottom:22px}
+.confirm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-confirm{padding:13px;border:none;border-radius:12px;font-weight:900;font-size:13px;cursor:pointer;font-family:'Cairo',sans-serif;color:#fff}
+.btn-yes{background:linear-gradient(135deg,#059669,#10b981)}
+.btn-no{background:rgba(255,255,255,.1)}
+.success-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(160deg,rgba(30,40,60,.98),rgba(15,23,42,1));border:1.5px solid rgba(16,185,129,.5);border-radius:24px;z-index:5001;width:calc(100% - 40px);max-width:380px;opacity:0;visibility:hidden;transition:all .3s cubic-bezier(.16,1,.3,1);box-shadow:0 30px 60px rgba(0,0,0,.6);padding:25px 20px;text-align:center}
+.success-modal.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+.success-icon{width:80px;height:80px;border-radius:26px;background:linear-gradient(135deg,var(--success),#059669);display:flex;align-items:center;justify-content:center;font-size:38px;color:#fff;margin:0 auto 18px;animation:popIcon .6s cubic-bezier(.16,1,.3,1)}
+@keyframes popIcon{0%{transform:scale(.5);opacity:0}50%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.success-title{font-size:20px;font-weight:900;color:#fff;margin-bottom:8px}
+.success-msg{font-size:13px;color:var(--text-soft);line-height:1.8;margin-bottom:22px}
+.toast{position:fixed;bottom:130px;left:20px;right:20px;padding:14px 20px;background:linear-gradient(135deg,rgba(30,41,59,.98),rgba(15,23,42,.98));border-radius:16px;color:#fff;font-size:13px;font-weight:700;box-shadow:0 20px 40px rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;gap:12px;transform:translateY(200px);opacity:0;transition:all .4s cubic-bezier(.16,1,.3,1);border:1px solid var(--border)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast i{font-size:18px}
+.toast.success{border-color:rgba(16,185,129,.4)}
+.toast.success i{color:var(--success)}
+.toast.error{border-color:rgba(239,68,68,.4)}
+.toast.error i{color:var(--danger)}
+.toast.info i{color:var(--secondary)}
+.notif-permission-banner{margin:0 20px 15px;padding:14px 16px;background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(239,68,68,.1));border:1.5px dashed rgba(245,158,11,.5);border-radius:16px;display:none;align-items:center;gap:12px}
+.notif-permission-banner.show{display:flex}
+.notif-permission-banner i{font-size:24px;color:#fbbf24;flex-shrink:0}
+.notif-permission-banner .txt{flex:1;font-size:12px;color:#fde047;font-weight:700;line-height:1.5}
+.notif-permission-banner button{padding:8px 14px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:10px;color:#fff;font-weight:900;font-size:11.5px;cursor:pointer;font-family:'Cairo',sans-serif;flex-shrink:0}
+.hidden{display:none!important}
+@media(min-width:500px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body><div class="splash" id="splashScreen">
+    <div class="splash-logo"><i class="fas fa-motorcycle"></i></div>
+    <div class="splash-title">سائق مشوار</div>
+    <div class="splash-sub">بوابة السائق</div>
+</div>
+
+<div class="login-screen" id="loginSection" style="display:none">
+    <div class="login-card">
+        <div class="login-logo"><i class="fas fa-motorcycle"></i></div>
+        <div class="login-title">أهلاً يا كابتن 👋</div>
+        <div class="login-sub">سجل دخولك وابدأ شغلك</div>
+        <div class="inp-wrap">
+            <button type="button" class="area-trigger-btn" id="areaTriggerBtn" onclick="openAreaPicker()">
+                <span id="areaTriggerLabel">📍 اختر منطقتك...</span>
+            </button>
+            <i class="fas fa-map-marker-alt" style="position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none"></i>
+        </div>
+        <div class="inp-wrap"><input type="tel" id="phoneInput" placeholder="رقم موبايلك (11 رقم)" maxlength="11"><i class="fas fa-mobile-alt"></i></div>
+        <div class="inp-wrap"><input type="password" id="codeInput" placeholder="كود الدخول" maxlength="6"><i class="fas fa-lock"></i></div>
+        <button class="btn-main" onclick="driverLogin()"><i class="fas fa-sign-in-alt"></i> دخول</button>
+    </div>
+</div>
+
+<div id="appSection" style="display:none">
+    <!-- ========== Home Page ========== -->
+    <div class="page active" id="page-home">
+        <div class="app-header">
+            <div class="header-row">
+                <div class="user-avatar" id="userAvatar">👤</div>
+                <div class="user-text">
+                    <div class="user-greet-line" id="greetText">صباح الخير 👋</div>
+                    <div class="user-name-line">
+                        <span id="displayName">اسمك</span>
+                        <span class="role-badge" id="roleBadge">🛺 سائق</span>
+                    </div>
+                    <div class="user-location-line"><i class="fas fa-map-marker-alt"></i><span id="displayArea">منطقتك</span></div>
+                </div>
+                <button class="notif-btn" id="notifBtn" onclick="requestNotifPermission()" title="تفعيل الإشعارات">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge hidden" id="notifBadge">0</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="notif-permission-banner" id="notifPermissionBanner">
+            <i class="fas fa-bell"></i>
+            <div class="txt">فعّل الإشعارات عشان يوصلك تنبيه بأي طلب جديد</div>
+            <button onclick="requestNotifPermission()">فعّل</button>
+        </div>
+
+        <div class="wallet-mini" onclick="switchPage('wallet')">
+            <div class="wallet-mini-icon">💰</div>
+            <div class="wallet-mini-info">
+                <div class="wallet-mini-label">إجمالي الأرباح</div>
+                <div class="wallet-mini-value"><span id="walletMiniValue">0</span> <small>ج</small></div>
+            </div>
+            <i class="fas fa-chevron-left" style="color:rgba(255,255,255,.7);font-size:14px;position:relative;z-index:1"></i>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box"><i class="fas fa-box" style="color:var(--primary)"></i><div class="sv" id="statTodayOrders">0</div><div class="sl">طلبات النهارده</div></div>
+            <div class="stat-box"><i class="fas fa-check-circle" style="color:var(--success)"></i><div class="sv" id="statCompleted">0</div><div class="sl">مكتملة</div></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title"><i class="fas fa-bell"></i> طلبات جديدة</div>
+                <span class="section-count" id="newOrdersCount">0</span>
+            </div>
+            <div id="newOrdersContainer"></div>
+        </div>
+    </div>
+
+    <!-- ========== Orders Page ========== -->
+    <div class="page" id="page-orders">
+        <div class="app-header" style="padding:16px 20px">
+            <div class="header-row">
+                <div style="flex:1">
+                    <div style="font-size:11px;color:var(--text-muted)">📦</div>
+                    <div style="font-size:22px;font-weight:900">طلباتي</div>
+                </div>
+            </div>
+        </div>
+        <div class="sub-tabs">
+            <button class="sub-tab active" id="subtab-active" onclick="switchOrdersTab('active')"><i class="fas fa-motorcycle"></i> جارية</button>
+            <button class="sub-tab" id="subtab-history" onclick="switchOrdersTab('history')"><i class="fas fa-archive"></i> أرشيف</button>
+        </div>
+        <div id="activeOrdersContainer" style="padding:0 20px"></div>
+        <div id="historyOrdersContainer" style="padding:0 20px;display:none"></div>
+    </div>
+
+    <!-- ========== Wallet Page ========== -->
+    <div class="page" id="page-wallet">
+        <div class="app-header" style="padding:16px 20px">
+            <div class="header-row">
+                <div style="flex:1">
+                    <div style="font-size:11px;color:var(--text-muted)">💰</div>
+                    <div style="font-size:22px;font-weight:900">محفظتي</div>
+                </div>
+            </div>
+        </div>
+        <div class="wallet-big-card">
+            <div class="wallet-big-label">إجمالي الأرباح</div>
+            <div class="wallet-big-value"><span id="walletBigValue">0</span> <small>ج</small></div>
+            <div class="wallet-big-note">💡 الرصيد بيزيد مع كل طلب مكتمل</div>
+        </div>
+        <div class="wallet-row">
+            <div class="wallet-row-icon" style="background:linear-gradient(135deg,#10b981,#059669)"><i class="fas fa-check-circle"></i></div>
+            <div class="wallet-row-info"><div class="wallet-row-label">إجمالي التسليمات</div><div class="wallet-row-sub">عدد الطلبات المكتملة</div></div>
+            <div class="wallet-row-value" id="walletOrdersCount">0</div>
+        </div>
+        <div class="wallet-row">
+            <div class="wallet-row-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-coins"></i></div>
+            <div class="wallet-row-info"><div class="wallet-row-label">العمولة المستحقة</div><div class="wallet-row-sub">مديونية للمشروع</div></div>
+            <div class="wallet-row-value debt" id="walletDebt">0 ج</div>
+        </div>
+    </div>
+
+    <!-- ========== Profile Page ========== -->
+    <div class="page" id="page-profile">
+        <div class="app-header" style="padding:16px 20px">
+            <div class="header-row">
+                <div style="flex:1">
+                    <div style="font-size:11px;color:var(--text-muted)">👤</div>
+                    <div style="font-size:22px;font-weight:900">حسابي</div>
+                </div>
+            </div>
+        </div>
+        <div class="profile-card" style="margin-top:18px">
+            <div class="profile-avatar" id="profileAvatar">👤</div>
+            <div class="profile-name" id="profileName">اسمك</div>
+            <div class="profile-phone" id="profilePhone">01xxxxxxxxx</div>
+            <div class="profile-area"><i class="fas fa-map-marker-alt"></i><span id="profileArea">منطقتك</span></div>
+        </div>
+        <div class="profile-list">
+            <button class="profile-list-item" onclick="switchPage('wallet')">
+                <div class="pli-icon" style="background:linear-gradient(135deg,var(--warning),#d97706)"><i class="fas fa-wallet"></i></div>
+                <div class="pli-text">محفظتي<small>رصيدك والعمولات</small></div>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="profile-list-item" onclick="requestNotifPermission()">
+                <div class="pli-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)"><i class="fas fa-bell"></i></div>
+                <div class="pli-text">الإشعارات<small id="profileNotifStatus">غير مفعّلة</small></div>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="profile-list-item" onclick="openWhatsappSupport()">
+                <div class="pli-icon" style="background:linear-gradient(135deg,#25D366,#128C7E)"><i class="fab fa-whatsapp"></i></div>
+                <div class="pli-text">مساعدة ودعم<small>تواصل مع الإدارة على واتساب</small></div>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="profile-list-item" onclick="logout()">
+                <div class="pli-icon" style="background:linear-gradient(135deg,var(--danger),#b91c1c)"><i class="fas fa-sign-out-alt"></i></div>
+                <div class="pli-text">تسجيل الخروج<small>هتخرج من حسابك</small></div>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="section" style="margin-top:20px;text-align:center">
+            <div style="font-size:11px;color:var(--text-dim);line-height:1.8">
+                <div style="font-weight:900;color:var(--text-muted);margin-bottom:4px">سائق مشوار</div>
+                <div>بوابة السائق • v1.0</div>
+                <div style="margin-top:6px">تصميم وِدّ</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Bottom Nav ========== -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-btn active" id="nav-home" data-color="home" onclick="switchPage('home')">
+            <i class="fas fa-home"></i><span>الرئيسية</span>
+            <span class="badge-num hidden" id="badgeHome">0</span>
+        </button>
+        <button class="nav-btn" id="nav-orders" data-color="orders" onclick="switchPage('orders')">
+            <i class="fas fa-box"></i><span>طلباتي</span>
+        </button>
+        <button class="nav-btn" id="nav-wallet" data-color="wallet" onclick="switchPage('wallet')">
+            <i class="fas fa-wallet"></i><span>محفظتي</span>
+        </button>
+        <button class="nav-btn" id="nav-profile" data-color="profile" onclick="switchPage('profile')">
+            <i class="fas fa-user"></i><span>حسابي</span>
+        </button>
+    </nav>
+</div>
+
+<!-- ========== Area Modal ========== -->
+<div class="modal-overlay" id="areaModalOverlay" onclick="closeAreaPicker()"></div>
+<div class="center-modal" id="areaModal">
+    <div class="center-modal-header">
+        <div class="center-modal-icon" style="background:linear-gradient(135deg,var(--warning),#d97706)"><i class="fas fa-map-marker-alt"></i></div>
+        <div><div class="center-modal-title">اختر منطقتك</div><div class="center-modal-sub">اضغط على المنطقة اللي بتشتغل فيها</div></div>
+        <button class="center-modal-close" onclick="closeAreaPicker()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="center-modal-body" id="areasListContainer"></div>
+</div>
+
+<!-- ========== Confirm Modal ========== -->
+<div class="modal-overlay" id="confirmOverlay" onclick="closeConfirm()"></div>
+<div class="confirm-modal" id="confirmModal">
+    <div class="confirm-icon" id="confirmIcon"><i class="fas fa-question"></i></div>
+    <div class="confirm-title" id="confirmTitle">تأكيد</div>
+    <div class="confirm-msg" id="confirmMsg">هل أنت متأكد؟</div>
+    <div class="confirm-btns">
+        <button class="btn-confirm btn-yes" id="confirmYesBtn">تأكيد</button>
+        <button class="btn-confirm btn-no" onclick="closeConfirm()">إلغاء</button>
+    </div>
+</div>
+
+<!-- ========== Success Modal ========== -->
+<div class="modal-overlay" id="successOverlay" onclick="closeSuccess()"></div>
+<div class="success-modal" id="successModal">
+    <div class="success-icon"><i class="fas fa-check"></i></div>
+    <div class="success-title" id="successTitle">تم بنجاح! 🎉</div>
+    <div class="success-msg" id="successMsg">تم تنفيذ العملية</div>
+    <button class="btn-main" onclick="closeSuccess()" style="background:linear-gradient(135deg,var(--success),#059669)"><i class="fas fa-check"></i> تمام</button>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-info-circle"></i><span id="toastMessage">رسالة</span></div>
+
+<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyAR98tJfqxO0_LZT7GRn-peOqQB1PgP6D4",authDomain:"family-4ff2a.firebaseapp.com",databaseURL:"https://family-4ff2a-default-rtdb.firebaseio.com",projectId:"family-4ff2a"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+// ✅ VAPID Key للإشعارات الخارجية
+const VAPID_KEY="BFPvEzO1oFjSi4K-auB-ZhARU5S2eWh8nkSyrA5SoaccU6uBsiZfW0IqpE-76oYq6fWt50Nx2CQwb7Jtx7NJidE";
+
+let driverData=null;
+let selectedArea=null;
+let cachedAreas=[];
+let activeOrdersTab='active';
+let lastNewOrdersCount=0;
+let allOrdersCache={};
+let swRegistration=null;
+let supportWhatsapp="01115699940";
+
+function $id(id){return document.getElementById(id);}
+function showToast(msg,type='info'){
+    const t=$id('toast');
+    if(!t)return;
+    $id('toastMessage').innerText=msg;
+    t.className='toast show '+type;
+    t.querySelector('i').className=type==='success'?'fas fa-check-circle':type==='error'?'fas fa-times-circle':'fas fa-info-circle';
+    clearTimeout(window.toastTimer);
+    window.toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ✅ الوقت بتنسيق 12 ساعة — نفس وقت الجهاز
+function formatTime(ts){
+    if(!ts)return 'منذ قليل';
+    const d=new Date(ts);
+    let h=d.getHours();
+    const m=String(d.getMinutes()).padStart(2,'0');
+    const ap=h>=12?'مساءً':'صباحاً';
+    h=h%12||12;
+    return `${h}:${m} ${ap}`;
+}
+
+// ====== Service Worker + الإشعارات ======
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+        swRegistration=reg;
+        console.log('✅ SW registered');
+    }).catch(err=>{
+        console.log('SW error (expected in localhost):',err.message);
+    });
+}
+
+async function requestNotifPermission(){
+    if(!('Notification' in window)){
+        showToast('المتصفح مش بيدعم الإشعارات','error');
+        return;
+    }
+    
+    const perm=await Notification.requestPermission();
+    if(perm==='granted'){
+        showToast('✅ تم تفعيل الإشعارات','success');
+        $id('profileNotifStatus').innerText='مفعّلة ✅';
+        $id('notifPermissionBanner').classList.remove('show');
+        if('serviceWorker' in navigator){
+            try{
+                await subscribeToPush();
+            }catch(e){
+                console.log('Push subscribe failed:',e.message);
+            }
+        }
+    }else{
+        showToast('لازم توافق على الإشعارات','error');
+    }
+}
+
+async function subscribeToPush(){
+    try{
+        if(!swRegistration)swRegistration=await navigator.serviceWorker.ready;
+        
+        let sub=await swRegistration.pushManager.getSubscription();
+        if(!sub){
+            const padding='='.repeat((4-VAPID_KEY.length%4)%4);
+            const base64=(VAPID_KEY+padding).replace(/-/g,'+').replace(/_/g,'/');
+            const rawData=atob(base64);
+            const outputArray=new Uint8Array(rawData.length);
+            for(let i=0;i<rawData.length;i++)outputArray[i]=rawData.charCodeAt(i);
+            
+            sub=await swRegistration.pushManager.subscribe({
+                userVisibleOnly:true,
+                applicationServerKey:outputArray
+            });
+        }
+        
+        const clean=driverData.phone.replace(/\D/g,'');
+        await db.ref(`push_subscriptions/${driverData.area}/${clean}`).set({
+            subscription:sub.toJSON(),
+            driverKey:driverData.key,
+            driverName:driverData.name,
+            driverPhone:driverData.phone,
+            area:driverData.area,
+            updatedAt:Date.now()
+        });
+        console.log('✅ Push subscription saved');
+    }catch(err){
+        console.log('Push subscribe error:',err);
+    }
+}
+
+function updateNotifStatus(){
+    if(!('Notification' in window))return;
+    const perm=Notification.permission;
+    const status=$id('profileNotifStatus');
+    if(perm==='granted'){
+        if(status)status.innerText='مفعّلة ✅';
+        $id('notifPermissionBanner').classList.remove('show');
+    }else if(perm==='denied'){
+        if(status)status.innerText='مرفوضة ❌';
+        $id('notifPermissionBanner').classList.remove('show');
+    }else{
+        if(status)status.innerText='غير مفعّلة';
+        $id('notifPermissionBanner').classList.add('show');
+    }
+}
+
+// ====== WhatsApp Support ======
+function openWhatsappSupport(){
+    const num=supportWhatsapp.replace(/\D/g,'');
+    const finalNum=num.startsWith('0')?'2'+num:num;
+    const msg=encodeURIComponent('السلام عليكم، محتاج مساعدة في تطبيق سائق مشوار 🙏');
+    window.open('https://wa.me/'+finalNum+'?text='+msg,'_blank');
+}
+
+// ====== Modal Helpers ======
+function openAreaPicker(){
+    const list=$id('areasListContainer');
+    if(!list)return;
+    if(cachedAreas.length===0){
+        list.innerHTML='<div class="empty-state" style="padding:30px 20px"><i class="fas fa-map"></i><p>لا توجد مناطق متاحة حالياً</p></div>';
+    }else{
+        let html='';
+        cachedAreas.forEach(a=>{
+            const isSel=(a===selectedArea);
+            html+=`<div class="area-item ${isSel?'selected':''}" onclick="pickArea('${a}')">
+                <div class="area-item-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="area-item-name">${a}</div>
+                ${isSel?'<i class="fas fa-check-circle area-item-check"></i>':''}
+            </div>`;
+        });
+        list.innerHTML=html;
+    }
+    $id('areaModalOverlay').classList.add('show');
+    $id('areaModal').classList.add('show');
+}
+function closeAreaPicker(){
+    $id('areaModalOverlay').classList.remove('show');
+    $id('areaModal').classList.remove('show');
+}
+function pickArea(area){
+    selectedArea=area;
+    const btn=$id('areaTriggerBtn');const label=$id('areaTriggerLabel');
+    if(label)label.innerText='📍 '+area;
+    if(btn)btn.classList.add('filled');
+    closeAreaPicker();
+}
+
+let confirmCb=null;
+function showConfirm(icon,title,msg,cb){
+    const i=$id('confirmIcon');if(i)i.innerHTML=`<i class="fas ${icon}"></i>`;
+    $id('confirmTitle').innerText=title;
+    $id('confirmMsg').innerText=msg;
+    confirmCb=cb;
+    $id('confirmOverlay').classList.add('show');
+    $id('confirmModal').classList.add('show');
+    $id('confirmYesBtn').onclick=()=>{closeConfirm();if(confirmCb)confirmCb();};
+}
+function closeConfirm(){
+    $id('confirmOverlay').classList.remove('show');
+    $id('confirmModal').classList.remove('show');
+}
+
+function showSuccess(title,msg){
+    $id('successTitle').innerText=title;
+    $id('successMsg').innerText=msg;
+    $id('successOverlay').classList.add('show');
+    $id('successModal').classList.add('show');
+}
+function closeSuccess(){
+    $id('successOverlay').classList.remove('show');
+    $id('successModal').classList.remove('show');
+}
+
+// ====== Splash + Auto Login ======
+setTimeout(()=>{
+    const sp=$id('splashScreen');
+    if(sp)sp.classList.add('hide');
+    const saved=localStorage.getItem('driver_data');
+    if(saved){
+        try{
+            driverData=JSON.parse(saved);
+            startApp();
+        }catch(e){
+            $id('loginSection').style.display='flex';
+            setTimeout(()=>{if(sp)sp.style.display='none';},600);
+        }
+    }else{
+        $id('loginSection').style.display='flex';
+        setTimeout(()=>{if(sp)sp.style.display='none';},600);
+    }
+},2200);
+
+db.ref('areas').on('value',snap=>{
+    cachedAreas=[];
+    snap.forEach(c=>{
+        const d=c.val();
+        if(d&&d.name&&d.active!==false)cachedAreas.push(d.name);
+    });
+});
+db.ref('settings/support/whatsapp').on('value',s=>{
+    const v=s.val();
+    if(v)supportWhatsapp=v;
+});
+
+// ====== Login ======
+function driverLogin(){
+    const phone=($id('phoneInput')||{}).value?.trim()||'';
+    const code=($id('codeInput')||{}).value?.trim()||'';
+    
+    if(!selectedArea){return showToast('اختر منطقتك أولاً','error');}
+    if(phone.length<11){return showToast('رقم الموبايل لازم 11 رقم','error');}
+    if(!code){return showToast('اكتب كود الدخول','error');}
+    
+    db.ref(`providers/${selectedArea}`).once('value').then(snap=>{
+        let found=null;
+        snap.forEach(c=>{
+            const p=c.val();
+            if(p&&p.phone===phone&&p.code===code){
+                found={...p,area:selectedArea,key:c.key};
+            }
+        });
+        if(found){
+            driverData=found;
+            localStorage.setItem('driver_data',JSON.stringify(driverData));
+            startApp();
+        }else{
+            showToast('رقم الموبايل أو الكود غلط','error');
+        }
+    }).catch(e=>showToast('خطأ في الاتصال','error'));
+}
+
+function startApp(){
+    $id('loginSection').style.display='none';
+    $id('appSection').style.display='block';
+    
+    const hour=new Date().getHours();
+    const greet=hour<12?'صباح الخير':hour<18?'مساء الخير':'مساء الخير';
+    $id('greetText').innerText=greet+' 👋';
+    $id('displayName').innerText=driverData.name||'كابتن';
+    $id('userAvatar').innerText=(driverData.name||'ك').charAt(0).toUpperCase();
+    $id('displayArea').innerText=driverData.area||'';
+    
+    const roleBadge=$id('roleBadge');
+    if(roleBadge){
+        const role=driverData.role||'';
+        if(role.includes('توك')||role.includes('مشوار'))roleBadge.innerText='🛺 سائق توك';
+        else roleBadge.innerText='🛵 مندوب عام';
+    }
+    
+    $id('profileAvatar').innerText=(driverData.name||'ك').charAt(0).toUpperCase();
+    $id('profileName').innerText=driverData.name||'';
+    $id('profilePhone').innerText=driverData.phone||'';
+    $id('profileArea').innerText=driverData.area||'';
+    
+    updateNotifStatus();
+    listenToOrders();
+    
+    if('Notification' in window && Notification.permission==='granted'){
+        subscribeToPush().catch(e=>console.log(e));
+    }
+}
+
+function switchPage(page){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+    const p=$id('page-'+page);if(p)p.classList.add('active');
+    const n=$id('nav-'+page);if(n)n.classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function switchOrdersTab(tab){
+    activeOrdersTab=tab;
+    $id('subtab-active').classList.toggle('active',tab==='active');
+    $id('subtab-history').classList.toggle('active',tab==='history');
+    $id('activeOrdersContainer').style.display=(tab==='active')?'block':'none';
+    $id('historyOrdersContainer').style.display=(tab==='history')?'block':'none';
+    renderOrders();
+}
+
+function listenToOrders(){
+    db.ref('orders').on('value',snap=>{
+        allOrdersCache={};
+        snap.forEach(c=>{
+            allOrdersCache[c.key]=c.val();
+        });
+        renderOrders();
+        updateStats();
+        updateWallet();
+        checkNewOrdersAlert();
+    });
+}
+
+// ====== نوع السائق ======
+function getDriverType(){
+    const role=driverData.role||'';
+    if(role.includes('توك')||role.includes('مشوار'))return 'tuktuk';
+    return 'delegate';
+}
+
+// ✅ عدد الطلبات الجارية بتاعت السائق
+function getActiveOrdersCount(){
+    if(!driverData)return 0;
+    return Object.keys(allOrdersCache).filter(id=>{
+        const o=allOrdersCache[id];
+        if(!o)return false;
+        if(o.status!=='active')return false;
+        return (o.driverKey===driverData.key) || (o.driverPhone===driverData.phone);
+    }).length;
+}
+
+// ✅ الحد الأقصى للطلبات حسب نوع السائق
+function getMaxOrders(){
+    return getDriverType()==='tuktuk'?1:3;
+}
+
+// ✅ هل وصل للحد الأقصى؟
+function hasReachedMaxOrders(){
+    return getActiveOrdersCount() >= getMaxOrders();
+}
+
+// ✅ هل عنده طلب جاري على الأقل
+function hasActiveOrder(){
+    return getActiveOrdersCount() > 0;
+}
+
+// ====== فلترة الطلبات ======
+function getOrdersByStatus(status){
+    const list=[];
+    const area=driverData.area;
+    const driverType=getDriverType();
+    
+    // ✅ لو وصل للحد الأقصى، مفيش طلبات جديدة تظهر له
+    if(status==='new' && hasReachedMaxOrders()) return [];
+    
+    Object.keys(allOrdersCache).forEach(id=>{
+        const o=allOrdersCache[id];
+        if(!o)return;
+        
+        // ❌ مفيش شحن في الصفحة دي
+        if(o.isShipping)return;
+        
+        const orderArea=o.customerArea||o.from;
+        if(orderArea && orderArea!==area)return;
+        
+        const type=(o.type||'').trim();
+        const orderIsTrip = type.includes('مشوار') || type.includes('طرد');
+        
+        // 🛺 توك توك → مشاوير بس
+        if(driverType==='tuktuk' && !orderIsTrip)return;
+        // 🛵 مندوب عام → كل حاجة ما عدا المشاوير
+        if(driverType==='delegate' && orderIsTrip)return;
+        
+        if(status==='new' && o.status!=='ready_for_driver')return;
+        if(status==='active' && o.status!=='active')return;
+        if(status==='history'){
+            if(o.driverKey !== driverData.key)return;
+            if(o.status!=='completed' && o.status!=='archived')return;
+        }
+        
+        list.push({id,...o});
+    });
+    
+    list.sort((a,b)=>(b.time||0)-(a.time||0));
+    return list;
+}// ====== Render Orders ======
+function renderOrders(){
+    const newOrders=getOrdersByStatus('new');
+    const activeOrders=getOrdersByStatus('active');
+    const historyOrders=getOrdersByStatus('history');
+    
+    // Home - New Orders
+    const newContainer=$id('newOrdersContainer');
+    if(newContainer){
+        if(hasReachedMaxOrders()){
+            // ✅ وصل للحد الأقصى
+            const type=getDriverType();
+            const maxOrders=getMaxOrders();
+            const activeCount=getActiveOrdersCount();
+            const typeLabel=type==='tuktuk'?'طلب':'طلبات';
+            newContainer.innerHTML=`<div class="empty-state" style="padding:40px 20px"><i class="fas fa-hourglass-half" style="color:#fbbf24"></i><p style="color:#fbbf24;font-weight:900">⏳ وصلت للحد الأقصى</p><p style="font-size:13px;margin-top:8px;color:var(--text-soft)">عندك <b style="color:#fff">${activeCount}</b> من <b style="color:#fff">${maxOrders}</b> ${typeLabel}</p><p style="font-size:11px;margin-top:6px;color:var(--text-dim)">خلّص طلب عشان تشوف طلبات جديدة</p></div>`;
+        }else{
+            newContainer.innerHTML=newOrders.length>0
+                ? newOrders.map(o=>renderNewOrderCard(o)).join('')
+                : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-bell-slash"></i><p>لا توجد طلبات جديدة دلوقتي</p><p style="font-size:11px;margin-top:8px;color:var(--text-dim)">استنى شوية، ممكن يوصلك طلب قريب</p></div>';
+        }
+    }
+    
+    // Orders Page - Active
+    const activeContainer=$id('activeOrdersContainer');
+    if(activeContainer){
+        activeContainer.innerHTML=activeOrders.length>0
+            ? activeOrders.map(o=>renderActiveOrderCard(o)).join('')
+            : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-motorcycle"></i><p>لا توجد طلبات جارية</p></div>';
+    }
+    
+    // Orders Page - History
+    const historyContainer=$id('historyOrdersContainer');
+    if(historyContainer){
+        historyContainer.innerHTML=historyOrders.length>0
+            ? historyOrders.map(o=>renderHistoryOrderCard(o)).join('')
+            : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-archive"></i><p>لا يوجد أرشيف بعد</p></div>';
+    }
+    
+    // Counts
+    const cnt=$id('newOrdersCount');
+    if(cnt)cnt.innerText=newOrders.length;
+    
+    const badge=$id('badgeHome');
+    if(badge){
+        if(newOrders.length>0){
+            badge.innerText=newOrders.length;
+            badge.classList.remove('hidden');
+        }else{
+            badge.classList.add('hidden');
+        }
+    }
+    
+    const notifBadge=$id('notifBadge');
+    if(notifBadge){
+        if(newOrders.length>0){
+            notifBadge.innerText=newOrders.length;
+            notifBadge.classList.remove('hidden');
+        }else{
+            notifBadge.classList.add('hidden');
+        }
+    }
+    
+    const notifBtn=$id('notifBtn');
+    if(notifBtn){
+        if(newOrders.length>0)notifBtn.classList.add('has-new');
+        else notifBtn.classList.remove('has-new');
+    }
+}
+
+// ====== ألوان وأيقونات الطلب ======
+function getOrderColor(type){
+    if(type.includes('مشوار'))return '#8b5cf6';
+    if(type.includes('ماركت'))return '#f59e0b';
+    if(type.includes('صيدلية'))return '#06b6d4';
+    if(type.includes('خضار'))return '#10b981';
+    if(type.includes('طرد'))return '#ec4899';
+    return '#8b5cf6';
+}
+function getOrderIcon(type){
+    if(type.includes('مشوار'))return 'fa-motorcycle';
+    if(type.includes('ماركت'))return 'fa-shopping-basket';
+    if(type.includes('صيدلية'))return 'fa-pills';
+    if(type.includes('خضار'))return 'fa-carrot';
+    if(type.includes('طرد'))return 'fa-box-open';
+    return 'fa-box';
+}
+
+// ====== كارت الطلب الجديد ======
+function renderNewOrderCard(o){
+    const type=o.type||'طلب';
+    const color=getOrderColor(type);
+    const icon=getOrderIcon(type);
+    const price=Number(o.price)||0;
+    const timeStr=o.orderTimeString||formatTime(o.time);
+    const custName=o.customerName||o.name||'عميل';
+    
+    let detailsHtml='';
+    if(type.includes('مشوار')||type.includes('طرد')){
+        detailsHtml=`
+            <div class="order-detail-row"><i class="fas fa-flag-checkered"></i><span>الوجهة: <b>${o.to||'غير محدد'}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>من: <b>${o.from||o.customerArea||'غير محدد'}</b></span></div>
+        `;
+    }else{
+        detailsHtml=`
+            <div class="order-detail-row"><i class="fas fa-list"></i><span>تفاصيل: <b>${o.details||'-'}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>عنوان: <b>${o.to||'-'}</b></span></div>
+        `;
+    }
+    
+    return `
+        <div class="order-card new-order" style="--oc:${color}">
+            <div class="order-top">
+                <div class="order-type-block">
+                    <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
+                    <div class="order-info">
+                        <div class="order-type-name">${type}</div>
+                        <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
+                    </div>
+                </div>
+                <div class="order-price-big">
+                    <div class="order-price-num">${price}</div>
+                    <div class="order-price-label">ج.م</div>
+                </div>
+            </div>
+            ${detailsHtml}
+            <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b></span></div>
+            <button class="btn-action btn-accept" onclick="acceptOrder('${o.id}')">
+                <i class="fas fa-check-circle"></i> اقبل الطلب
+            </button>
+        </div>
+    `;
+}
+
+// ====== كارت الطلب الجاري (بدون خريطة) ======
+function renderActiveOrderCard(o){
+    const type=o.type||'طلب';
+    const color=getOrderColor(type);
+    const icon=getOrderIcon(type);
+    const price=Number(o.price)||0;
+    const timeStr=o.orderTimeString||formatTime(o.time);
+    const phone=o.customerPhone||o.phone||'';
+    const custName=o.customerName||o.name||'عميل';
+    
+    let detailsHtml='';
+    if(type.includes('مشوار')||type.includes('طرد')){
+        detailsHtml=`
+            <div class="order-detail-row"><i class="fas fa-flag-checkered"></i><span>الوجهة: <b>${o.to||'غير محدد'}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>من: <b>${o.from||o.customerArea||'-'}</b></span></div>
+        `;
+    }else{
+        detailsHtml=`
+            <div class="order-detail-row"><i class="fas fa-list"></i><span>تفاصيل: <b>${o.details||'-'}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>عنوان: <b>${o.to||'-'}</b></span></div>
+        `;
+    }
+    
+    return `
+        <div class="order-card" style="--oc:${color}">
+            <div class="order-top">
+                <div class="order-type-block">
+                    <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
+                    <div class="order-info">
+                        <div class="order-type-name">${type}</div>
+                        <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
+                    </div>
+                </div>
+                <span class="status-badge status-active"><i class="fas fa-motorcycle"></i> جارية</span>
+            </div>
+            ${detailsHtml}
+            <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b> • ${phone}</span></div>
+            <div class="order-detail-row"><i class="fas fa-money-bill-wave"></i><span>السعر: <b style="color:var(--success)">${price} ج</b></span></div>
+            <div class="order-actions">
+                <a href="tel:${phone}" class="btn-action btn-call"><i class="fas fa-phone"></i> اتصال بالعميل</a>
+                <button class="btn-action btn-finish" onclick="finishOrder('${o.id}')">
+                    <i class="fas fa-check-double"></i> إنهاء الطلب
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// ====== كارت الأرشيف ======
+function renderHistoryOrderCard(o){
+    const type=o.type||'طلب';
+    const color=getOrderColor(type);
+    const icon=getOrderIcon(type);
+    const price=Number(o.price)||0;
+    const timeStr=o.orderTimeString||formatTime(o.time);
+    const custName=o.customerName||o.name||'عميل';
+    
+    return `
+        <div class="order-card" style="--oc:${color}">
+            <div class="order-top">
+                <div class="order-type-block">
+                    <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
+                    <div class="order-info">
+                        <div class="order-type-name">${type}</div>
+                        <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
+                    </div>
+                </div>
+                <span class="status-badge status-done"><i class="fas fa-check"></i> مكتملة</span>
+            </div>
+            <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>الوجهة: <b>${o.to||'-'}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-money-bill-wave"></i><span>السعر: <b style="color:var(--success)">${price} ج</b></span></div>
+        </div>
+    `;
+}
+
+// ====== قبول الطلب ======
+function acceptOrder(id){
+    const o=allOrdersCache[id];
+    if(!o)return;
+    
+    // ✅ منع قبول أكتر من الحد الأقصى
+    if(hasReachedMaxOrders()){
+        const maxOrders=getMaxOrders();
+        const typeLabel=getDriverType()==='tuktuk'?'طلب':'طلبات';
+        showToast(`⚠️ وصلت للحد الأقصى (${maxOrders} ${typeLabel})`,'error');
+        return;
+    }
+    
+    showConfirm('fa-check-circle','قبول الطلب','هل أنت متأكد من قبول الطلب؟ هيتحوّل لطلباتك الجارية.',()=>{
+        // تحقق تاني
+        if(hasReachedMaxOrders()){
+            showToast('وصلت للحد الأقصى!','error');
+            return;
+        }
+        
+        db.ref('orders/'+id).update({
+            status:'active',
+            driverKey:driverData.key,
+            driverName:driverData.name,
+            driverPhone:driverData.phone,
+            driverRole:driverData.role,
+            acceptedAt:Date.now()
+        }).then(()=>{
+            showSuccess('تم القبول! ✅','الطلب اتنقل لطلباتك الجارية.');
+        }).catch(e=>{
+            showToast('خطأ في قبول الطلب','error');
+        });
+    });
+}
+
+// ====== إنهاء الطلب ======
+function finishOrder(id){
+    const o=allOrdersCache[id];
+    if(!o)return;
+    
+    showConfirm('fa-check-double','إنهاء الطلب','هل وصلت للعميل وسلّمت الطلب؟',()=>{
+        db.ref('orders/'+id).update({
+            status:'completed',
+            completedAt:Date.now()
+        }).then(()=>{
+            showSuccess('تم التسليم! 🎉','الطلب اتمم واتضاف لمحفظتك.');
+        }).catch(e=>{
+            showToast('خطأ في إنهاء الطلب','error');
+        });
+    });
+}// ====== الإحصائيات ======
+function updateStats(){
+    const today=new Date();today.setHours(0,0,0,0);
+    const todayTime=today.getTime();
+    
+    let todayCount=0;
+    let completedCount=0;
+    
+    Object.keys(allOrdersCache).forEach(id=>{
+        const o=allOrdersCache[id];
+        if(!o)return;
+        if(o.driverKey!==driverData.key && o.driverPhone!==driverData.phone)return;
+        
+        if(o.time&&o.time>=todayTime)todayCount++;
+        if(o.status==='completed')completedCount++;
+    });
+    
+    const t1=$id('statTodayOrders');
+    const t2=$id('statCompleted');
+    if(t1)t1.innerText=todayCount;
+    if(t2)t2.innerText=completedCount;
+}
+
+// ====== المحفظة ======
+function updateWallet(){
+    let earned=0;
+    let commission=0;
+    let ordersCount=0;
+    
+    Object.keys(allOrdersCache).forEach(id=>{
+        const o=allOrdersCache[id];
+        if(!o)return;
+        if(o.driverKey!==driverData.key && o.driverPhone!==driverData.phone)return;
+        if(o.status!=='completed' && o.status!=='archived')return;
+        
+        const price=Number(o.price)||0;
+        earned+=price;
+        ordersCount++;
+        
+        const rawComm=Number(o.commission);
+        const orderComm=(!isNaN(rawComm)&&o.commission!==undefined)?rawComm:(price*10)/100;
+        commission+=orderComm;
+    });
+    
+    const settled=Number(driverData.settledDebt)||0;
+    const debt=Math.max(0,commission-settled);
+    
+    const w1=$id('walletMiniValue');
+    const w2=$id('walletBigValue');
+    const w3=$id('walletOrdersCount');
+    const w4=$id('walletDebt');
+    
+    if(w1)w1.innerText=Math.round(earned);
+    if(w2)w2.innerText=Math.round(earned);
+    if(w3)w3.innerText=ordersCount;
+    if(w4)w4.innerText=Math.round(debt)+' ج';
+}
+
+// ====== تنبيه الطلبات الجديدة ======
+function checkNewOrdersAlert(){
+    const newOrders=getOrdersByStatus('new');
+    const count=newOrders.length;
+    
+    if(count>lastNewOrdersCount && lastNewOrdersCount>=0){
+        // صوت
+        const sound=$id('alertSound');
+        if(sound){
+            sound.currentTime=0;
+            sound.play().catch(()=>{});
+        }
+        
+        // اهتزاز
+        if(navigator.vibrate)navigator.vibrate([200,100,200]);
+        
+        // Toast داخلي
+        if(count>lastNewOrdersCount){
+            showToast(`🔔 عندك ${count} طلب جديد!`,'success');
+        }
+        
+        // إشعار خارجي (لو الصفحة مش في المقدمة)
+        if(document.hidden && 'Notification' in window && Notification.permission==='granted'){
+            try{
+                new Notification('🛵 طلب جديد',{
+                    body:`عندك ${count} طلب في انتظارك`,
+                    icon:'https://cdn-icons-png.flaticon.com/512/3063/3063822.png',
+                    tag:'new-order-'+Date.now(),
+                    requireInteraction:true,
+                    vibrate:[200,100,200]
+                });
+            }catch(e){console.log('Notif error:',e);}
+        }
+    }
+    lastNewOrdersCount=count;
+}
+
+// ====== Logout ======
+function logout(){
+    showConfirm('fa-sign-out-alt','تسجيل الخروج','هل أنت متأكد إنك عايز تخرج من حسابك؟',()=>{
+        localStorage.removeItem('driver_data');
+        location.reload();
+    });
+}
+
+// ====== الاستماع لحالة الصفحة ======
+document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden){
+        renderOrders();
+        updateStats();
+        updateWallet();
+    }
+});
+
+// ====== الاستماع من Service Worker ======
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.addEventListener('message',event=>{
+        if(event.data && event.data.type==='NEW_ORDER'){
+            if(!document.hidden){
+                renderOrders();
+                updateStats();
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>
