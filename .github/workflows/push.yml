@@ -5,17 +5,20 @@ on:
     - cron: '*/2 * * * *'
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   send-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       
       - name: Send Push Notifications
         env:
@@ -24,7 +27,6 @@ jobs:
         run: |
           node -e "
           const https = require('https');
-          
           const FIREBASE_URL = process.env.FIREBASE_URL;
           const ONESIGNAL_REST_KEY = process.env.ONESIGNAL_REST_KEY;
           const ONESIGNAL_APP_ID = '8c8e23ef-d679-4a5f-8710-01bb801461fb';
@@ -35,11 +37,8 @@ jobs:
                 let data = '';
                 res.on('data', chunk => data += chunk);
                 res.on('end', () => {
-                  try {
-                    resolve(JSON.parse(data));
-                  } catch (e) {
-                    resolve(null);
-                  }
+                  try { resolve(JSON.parse(data)); }
+                  catch (e) { resolve(null); }
                 });
               }).on('error', reject);
             });
@@ -48,13 +47,8 @@ jobs:
           function httpsPost(hostname, path, headers, body) {
             return new Promise((resolve, reject) => {
               const options = {
-                hostname,
-                path,
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json; charset=utf-8',
-                  ...headers
-                }
+                hostname, path, method: 'POST',
+                headers: { 'Content-Type': 'application/json; charset=utf-8', ...headers }
               };
               const req = https.request(options, (res) => {
                 let data = '';
@@ -69,16 +63,10 @@ jobs:
           
           async function main() {
             console.log('🔍 Starting push check...');
-            
             const fiveMinAgo = Date.now() - (5 * 60 * 1000);
             const url = FIREBASE_URL + '/orders.json?orderBy=\"time\"&startAt=' + fiveMinAgo;
-            
             const orders = await httpsGet(url);
-            if (!orders) {
-              console.log('❌ No orders fetched');
-              return;
-            }
-            
+            if (!orders) { console.log('❌ No orders fetched'); return; }
             const newOrders = [];
             Object.keys(orders).forEach(id => {
               const o = orders[id];
@@ -86,46 +74,31 @@ jobs:
                 newOrders.push({ id, ...o });
               }
             });
-            
             console.log('📦 New orders found:', newOrders.length);
-            
-            for (const order of newOrders) {
-              await processOrder(order);
-            }
-            
+            for (const order of newOrders) { await processOrder(order); }
             console.log('✅ Done');
           }
           
           async function processOrder(order) {
             const area = order.customerArea || order.from;
-            if (!area) {
-              console.log('⚠️ No area for order', order.id);
-              return;
-            }
-            
+            if (!area) { console.log('⚠️ No area'); return; }
             let targetRole = 'delegate';
             const type = order.type || '';
-            if (type.includes('مشوار') || type.includes('طرد')) {
-              targetRole = 'tuktuk';
-            } else if (order.isShipping) {
-              targetRole = 'shipping';
-            }
-            
+            if (type.includes('مشوار') || type.includes('طرد')) targetRole = 'tuktuk';
+            else if (order.isShipping) targetRole = 'shipping';
             let title = '🛵 طلب جديد';
             let body = 'عندك طلب جديد في انتظارك';
-            let icon = 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png';
-            
+            const icon = 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png';
             if (targetRole === 'tuktuk') {
               title = '🛺 مشوار جديد';
               body = (order.to ? 'مشوار إلى ' + order.to : 'عندك مشوار جديد');
             } else if (targetRole === 'shipping') {
               title = '🚚 شحنة جديدة';
               body = order.trackingCode ? 'شحنة رقم ' + order.trackingCode : 'عندك شحنة جديدة';
-            } else if (targetRole === 'delegate') {
+            } else {
               title = '🛵 طلب توصيل جديد';
               body = (order.to ? 'طلب إلى ' + order.to : 'عندك طلب توصيل جديد');
             }
-            
             const notificationPayload = {
               app_id: ONESIGNAL_APP_ID,
               headings: { ar: title, en: title },
@@ -143,26 +116,13 @@ jobs:
                 { field: 'tag', key: 'driverRole', relation: '=', value: targetRole }
               ]
             };
-            
             const result = await httpsPost(
               'onesignal.com',
               '/api/v1/notifications',
-              {
-                'Authorization': 'Basic ' + ONESIGNAL_REST_KEY
-              },
+              { 'Authorization': 'Basic ' + ONESIGNAL_REST_KEY },
               JSON.stringify(notificationPayload)
             );
-            
-            console.log('📤 Notification sent for order', order.id, '→', result.status);
-            
-            if (result.status === 200) {
-              await httpsPost(
-                'family-4ff2a-default-rtdb.firebaseio.com'.replace('https://', ''),
-                '/' + 'orders/' + order.id + '/notified.json'.replace(FIREBASE_URL, ''),
-                {},
-                JSON.stringify(true)
-              ).catch(() => {});
-            }
+            console.log('📤 Sent for', order.id, '→', result.status, result.data);
           }
           
           main().catch(err => {
