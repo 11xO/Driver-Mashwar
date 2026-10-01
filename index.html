@@ -16,13 +16,14 @@
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
-      appId: "8c8e23ef-d679-4a5f-8710-01bb801461fb",
-      notifyButton: {
-        enable: false
-      },
-      allowLocalhostAsSecureOrigin: true
+        appId: "8c8e23ef-d679-4a5f-8710-01bb801461fb",
+        notifyButton: { enable: false },
+        allowLocalhostAsSecureOrigin: true,
+        serviceWorkerPath: 'OneSignalSDKWorker.js',
+        serviceWorkerParam: { scope: '/' },
+        autoResubscribe: true
     });
-    console.log('✅ OneSignal initialized');
+    console.log('✅ OneSignal initialized with SW path');
   });
 </script>
 
@@ -428,7 +429,6 @@ let cachedAreas=[];
 let activeOrdersTab='active';
 let lastNewOrdersCount=0;
 let allOrdersCache={};
-let swRegistration=null;
 let supportWhatsapp="01115699940";
 
 function $id(id){return document.getElementById(id);}
@@ -452,89 +452,83 @@ function formatTime(ts){
     return `${h}:${m} ${ap}`;
 }
 
-if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').then(reg=>{
-        swRegistration=reg;
-        console.log('✅ SW registered');
-    }).catch(err=>{
-        console.log('SW error (expected in localhost):',err.message);
-    });
-}
-
-// ✅ OneSignal — تسجيل السائق
-function registerOneSignal(){
+// ✅ OneSignal — تسجيل السائق (محدث)
+async function registerOneSignal(){
     if(!driverData){
-        console.log('⚠️ No driverData');
+        console.log('⚠️ No driverData — skip OneSignal');
         return;
     }
+    
     const clean = driverData.phone.replace(/\D/g,'');
     console.log('📝 Registering OneSignal for:', clean);
     
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal){
-        try{
-            console.log('🔔 Requesting permission...');
-            await OneSignal.Notifications.requestPermission();
-            console.log('✅ Permission granted');
-            
-            console.log('👤 Logging in...');
-            await OneSignal.login(clean);
-            console.log('✅ Logged in');
-            
-            await OneSignal.User.addTags({
-                driverPhone: driverData.phone,
-                driverName: driverData.name,
-                driverArea: driverData.area,
-                driverKey: driverData.key,
-                driverRole: driverData.role || 'سائق',
-                role: driverData.role || 'سائق'
-            });
-            console.log('✅ Tags added');
-            
-            // استنى 2 ثانية عشان الـ id يتولد
-            await new Promise(r => setTimeout(r, 2000));
-            
-            const osId = OneSignal.User.PushSubscription.id;
-            console.log('🆔 OneSignal ID:', osId);
-            
-            if(osId){
-                await db.ref(`push_subscriptions/${driverData.area}/${clean}`).update({
-                    oneSignalId: osId,
-                    driverKey: driverData.key,
-                    driverName: driverData.name,
-                    driverPhone: driverData.phone,
-                    area: driverData.area,
-                    role: driverData.role || 'سائق',
-                    driverRole: driverData.role || 'سائق',
-                    updatedAt: Date.now()
-                });
-                console.log('✅ Saved to Firebase');
-            }else{
-                console.log('⚠️ No OneSignal ID yet — trying again...');
-                // حاول تاني بعد 3 ثواني
-                setTimeout(async () => {
-                    const id2 = OneSignal.User.PushSubscription.id;
-                    console.log('🆔 Second try:', id2);
-                    if(id2){
-                        await db.ref(`push_subscriptions/${driverData.area}/${clean}`).update({
-                            oneSignalId: id2,
-                            driverKey: driverData.key,
-                            driverName: driverData.name,
-                            driverPhone: driverData.phone,
-                            area: driverData.area,
-                            role: driverData.role || 'سائق',
-                            driverRole: driverData.role || 'سائق',
-                            updatedAt: Date.now()
-                        });
-                        console.log('✅ Saved (second try)');
-                    }
-                }, 3000);
-            }
-        }catch(err){
-            console.log('❌ OneSignal error:', err.message, err);
+    if(!window.OneSignal){
+        console.log('⏳ OneSignal not ready — retry in 1s');
+        setTimeout(registerOneSignal, 1000);
+        return;
+    }
+    
+    try{
+        console.log('🔔 Requesting permission...');
+        const perm = await window.OneSignal.Notifications.requestPermission();
+        console.log('✅ Permission result:', perm);
+        
+        if(!perm){
+            console.log('❌ Permission denied — stop');
+            return;
         }
-    });
+        
+        console.log('👤 Logging in with:', clean);
+        await window.OneSignal.login(clean);
+        console.log('✅ Logged in');
+        
+        await window.OneSignal.User.addTags({
+            driverPhone: driverData.phone,
+            driverName: driverData.name,
+            driverArea: driverData.area,
+            driverKey: driverData.key,
+            driverRole: driverData.role || 'سائق',
+            role: driverData.role || 'سائق'
+        });
+        console.log('✅ Tags added');
+        
+        let osId = null;
+        for(let i = 1; i <= 5; i++){
+            await new Promise(r => setTimeout(r, 1500));
+            osId = window.OneSignal.User.PushSubscription.id;
+            console.log(`🆔 Try ${i}:`, osId);
+            if(osId) break;
+        }
+        
+        if(!osId){
+            console.log('❌ No OneSignal ID after 5 tries');
+            return;
+        }
+        
+        await db.ref(`push_subscriptions/${driverData.area}/${clean}`).update({
+            oneSignalId: osId,
+            driverKey: driverData.key,
+            driverName: driverData.name,
+            driverPhone: driverData.phone,
+            area: driverData.area,
+            role: driverData.role || 'سائق',
+            driverRole: driverData.role || 'سائق',
+            updatedAt: Date.now()
+        });
+        console.log('✅✅ Saved to Firebase:', osId);
+        
+        if(typeof showToast === 'function'){
+            showToast('✅ تم تفعيل الإشعارات','success');
+        }
+        
+    }catch(err){
+        console.log('❌ OneSignal error:', err.message, err);
+        if(typeof showToast === 'function'){
+            showToast('⚠️ فشل تفعيل الإشعارات','error');
+        }
+    }
 }
+
 async function requestNotifPermission(){
     if(!('Notification' in window)){
         showToast('المتصفح مش بيدعم الإشعارات','error');
@@ -1117,17 +1111,6 @@ document.addEventListener('visibilitychange',()=>{
         updateWallet();
     }
 });
-
-if('serviceWorker' in navigator){
-    navigator.serviceWorker.addEventListener('message',event=>{
-        if(event.data && event.data.type === 'NEW_ORDER'){
-            if(!document.hidden){
-                renderOrders();
-                updateStats();
-            }
-        }
-    });
-}
 </script>
 </body>
 </html>
