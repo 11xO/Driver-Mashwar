@@ -1,9 +1,7 @@
 name: Push Notifications for New Orders
 
 on:
-  schedule:
-    - cron: '*/2 * * * *'
-  workflow_dispatch:
+  repository_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
