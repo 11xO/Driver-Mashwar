@@ -463,21 +463,40 @@ if('serviceWorker' in navigator){
 
 // ✅ OneSignal — تسجيل السائق
 function registerOneSignal(){
-    if(!driverData)return;
-    const clean=driverData.phone.replace(/\D/g,'');
+    if(!driverData){
+        console.log('⚠️ No driverData');
+        return;
+    }
+    const clean = driverData.phone.replace(/\D/g,'');
+    console.log('📝 Registering OneSignal for:', clean);
+    
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal){
         try{
+            console.log('🔔 Requesting permission...');
             await OneSignal.Notifications.requestPermission();
+            console.log('✅ Permission granted');
+            
+            console.log('👤 Logging in...');
             await OneSignal.login(clean);
+            console.log('✅ Logged in');
+            
             await OneSignal.User.addTags({
                 driverPhone: driverData.phone,
                 driverName: driverData.name,
                 driverArea: driverData.area,
                 driverKey: driverData.key,
+                driverRole: driverData.role || 'سائق',
                 role: driverData.role || 'سائق'
             });
+            console.log('✅ Tags added');
+            
+            // استنى 2 ثانية عشان الـ id يتولد
+            await new Promise(r => setTimeout(r, 2000));
+            
             const osId = OneSignal.User.PushSubscription.id;
+            console.log('🆔 OneSignal ID:', osId);
+            
             if(osId){
                 await db.ref(`push_subscriptions/${driverData.area}/${clean}`).update({
                     oneSignalId: osId,
@@ -485,16 +504,37 @@ function registerOneSignal(){
                     driverName: driverData.name,
                     driverPhone: driverData.phone,
                     area: driverData.area,
+                    role: driverData.role || 'سائق',
+                    driverRole: driverData.role || 'سائق',
                     updatedAt: Date.now()
                 });
-                console.log('✅ OneSignal registered:', osId);
+                console.log('✅ Saved to Firebase');
+            }else{
+                console.log('⚠️ No OneSignal ID yet — trying again...');
+                // حاول تاني بعد 3 ثواني
+                setTimeout(async () => {
+                    const id2 = OneSignal.User.PushSubscription.id;
+                    console.log('🆔 Second try:', id2);
+                    if(id2){
+                        await db.ref(`push_subscriptions/${driverData.area}/${clean}`).update({
+                            oneSignalId: id2,
+                            driverKey: driverData.key,
+                            driverName: driverData.name,
+                            driverPhone: driverData.phone,
+                            area: driverData.area,
+                            role: driverData.role || 'سائق',
+                            driverRole: driverData.role || 'سائق',
+                            updatedAt: Date.now()
+                        });
+                        console.log('✅ Saved (second try)');
+                    }
+                }, 3000);
             }
         }catch(err){
-            console.log('OneSignal error:', err);
+            console.log('❌ OneSignal error:', err.message, err);
         }
     });
 }
-
 async function requestNotifPermission(){
     if(!('Notification' in window)){
         showToast('المتصفح مش بيدعم الإشعارات','error');
