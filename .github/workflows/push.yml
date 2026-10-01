@@ -1,0 +1,172 @@
+name: Push Notifications for New Orders
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'
+  workflow_dispatch:
+
+jobs:
+  send-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Send Push Notifications
+        env:
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+          ONESIGNAL_REST_KEY: ${{ secrets.ONESIGNAL_REST_KEY }}
+        run: |
+          node -e "
+          const https = require('https');
+          
+          const FIREBASE_URL = process.env.FIREBASE_URL;
+          const ONESIGNAL_REST_KEY = process.env.ONESIGNAL_REST_KEY;
+          const ONESIGNAL_APP_ID = '8c8e23ef-d679-4a5f-8710-01bb801461fb';
+          
+          function httpsGet(url) {
+            return new Promise((resolve, reject) => {
+              https.get(url, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                  try {
+                    resolve(JSON.parse(data));
+                  } catch (e) {
+                    resolve(null);
+                  }
+                });
+              }).on('error', reject);
+            });
+          }
+          
+          function httpsPost(hostname, path, headers, body) {
+            return new Promise((resolve, reject) => {
+              const options = {
+                hostname,
+                path,
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8',
+                  ...headers
+                }
+              };
+              const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => resolve({ status: res.statusCode, data }));
+              });
+              req.on('error', reject);
+              req.write(body);
+              req.end();
+            });
+          }
+          
+          async function main() {
+            console.log('🔍 Starting push check...');
+            
+            const fiveMinAgo = Date.now() - (5 * 60 * 1000);
+            const url = FIREBASE_URL + '/orders.json?orderBy=\"time\"&startAt=' + fiveMinAgo;
+            
+            const orders = await httpsGet(url);
+            if (!orders) {
+              console.log('❌ No orders fetched');
+              return;
+            }
+            
+            const newOrders = [];
+            Object.keys(orders).forEach(id => {
+              const o = orders[id];
+              if (o && o.status === 'ready_for_driver' && !o.notified) {
+                newOrders.push({ id, ...o });
+              }
+            });
+            
+            console.log('📦 New orders found:', newOrders.length);
+            
+            for (const order of newOrders) {
+              await processOrder(order);
+            }
+            
+            console.log('✅ Done');
+          }
+          
+          async function processOrder(order) {
+            const area = order.customerArea || order.from;
+            if (!area) {
+              console.log('⚠️ No area for order', order.id);
+              return;
+            }
+            
+            let targetRole = 'delegate';
+            const type = order.type || '';
+            if (type.includes('مشوار') || type.includes('طرد')) {
+              targetRole = 'tuktuk';
+            } else if (order.isShipping) {
+              targetRole = 'shipping';
+            }
+            
+            let title = '🛵 طلب جديد';
+            let body = 'عندك طلب جديد في انتظارك';
+            let icon = 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png';
+            
+            if (targetRole === 'tuktuk') {
+              title = '🛺 مشوار جديد';
+              body = (order.to ? 'مشوار إلى ' + order.to : 'عندك مشوار جديد');
+            } else if (targetRole === 'shipping') {
+              title = '🚚 شحنة جديدة';
+              body = order.trackingCode ? 'شحنة رقم ' + order.trackingCode : 'عندك شحنة جديدة';
+            } else if (targetRole === 'delegate') {
+              title = '🛵 طلب توصيل جديد';
+              body = (order.to ? 'طلب إلى ' + order.to : 'عندك طلب توصيل جديد');
+            }
+            
+            const notificationPayload = {
+              app_id: ONESIGNAL_APP_ID,
+              headings: { ar: title, en: title },
+              contents: { ar: body, en: body },
+              url: 'https://11xo.github.io/Driver-Mashwar/',
+              web_icon: icon,
+              chrome_web_icon: icon,
+              chrome_web_badge: icon,
+              android_channel_id: 'orders',
+              priority: 10,
+              ttl: 300,
+              filters: [
+                { field: 'tag', key: 'driverArea', relation: '=', value: area },
+                { operator: 'AND' },
+                { field: 'tag', key: 'driverRole', relation: '=', value: targetRole }
+              ]
+            };
+            
+            const result = await httpsPost(
+              'onesignal.com',
+              '/api/v1/notifications',
+              {
+                'Authorization': 'Basic ' + ONESIGNAL_REST_KEY
+              },
+              JSON.stringify(notificationPayload)
+            );
+            
+            console.log('📤 Notification sent for order', order.id, '→', result.status);
+            
+            if (result.status === 200) {
+              await httpsPost(
+                'family-4ff2a-default-rtdb.firebaseio.com'.replace('https://', ''),
+                '/' + 'orders/' + order.id + '/notified.json'.replace(FIREBASE_URL, ''),
+                {},
+                JSON.stringify(true)
+              ).catch(() => {});
+            }
+          }
+          
+          main().catch(err => {
+            console.log('❌ Error:', err.message);
+            process.exit(1);
+          });
+          "
