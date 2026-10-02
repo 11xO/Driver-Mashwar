@@ -11,12 +11,7 @@
   "lang": "ar",
   "dir": "rtl",
   "icons": [
-    {
-      "src": "https://i.postimg.cc/TwpdQsm8/197216.jpg",
-      "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any maskable"
-    },
+   
     {
       "src": "https://i.postimg.cc/TwpdQsm8/197216.jpg",
       "sizes": "512x512",
