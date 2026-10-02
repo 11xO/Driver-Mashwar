@@ -12,10 +12,22 @@
   "dir": "rtl",
   "icons": [
     {
+      "src": "https://11xo.github.io/Driver-Mashwar/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
       "src": "https://11xo.github.io/Driver-Mashwar/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://11xo.github.io/Driver-Mashwar/maskable_icon_x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
