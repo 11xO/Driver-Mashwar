@@ -23,7 +23,7 @@
         serviceWorkerParam: { scope: '/' },
         autoResubscribe: true
     });
-    console.log('✅ OneSignal initialized with SW path');
+    console.log('✅ OneSignal initialized');
   });
 </script>
 
@@ -84,9 +84,18 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
 .section-title{font-size:15px;font-weight:900;color:#fff;display:flex;align-items:center;gap:8px}
 .section-title i{width:28px;height:28px;background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(6,182,212,.15));border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:13px}
 .section-count{background:rgba(16,185,129,.15);color:#34d399;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:900;border:1px solid rgba(16,185,129,.3)}
-.order-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.filter-tabs{display:flex;gap:8px;padding:0 20px 12px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.filter-tabs::-webkit-scrollbar{display:none}
+.filter-tab{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:20px;color:var(--text-soft);font-size:12.5px;font-weight:800;cursor:pointer;font-family:'Cairo',sans-serif;white-space:nowrap;transition:.25s;flex-shrink:0}
+.filter-tab:active{transform:scale(.95)}
+.filter-tab.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-color:var(--primary);color:#fff;box-shadow:0 8px 18px rgba(139,92,246,.4)}
+.filter-tab .tab-count{background:rgba(255,255,255,.25);color:#fff;font-size:10.5px;font-weight:900;padding:2px 7px;border-radius:10px;min-width:18px;text-align:center}
+.filter-tab:not(.active) .tab-count{background:rgba(139,92,246,.2);color:#c4b5fd}
+.filter-tab-icon{font-size:14px}
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;cursor:pointer;transition:.2s}
+.order-card:active{transform:scale(.98)}
 .order-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--oc,#8b5cf6)}
-.order-card.new-order{border-color:rgba(16,185,129,.4);animation:pulseNew 2s infinite}
+.order-card.new-order{border-color:rgba(16,185,129,.4);animation:pulseNew 2s infinite;cursor:default}
 @keyframes pulseNew{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 8px rgba(16,185,129,0)}}
 .order-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:10px}
 .order-type-block{display:flex;align-items:center;gap:10px;flex:1}
@@ -100,6 +109,12 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
 .order-detail-row{font-size:12.5px;color:var(--text-soft);padding:6px 0;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
 .order-detail-row i{color:var(--primary);font-size:11px;margin-top:4px;flex-shrink:0}
 .order-detail-row b{color:#fff;font-weight:700}
+.order-images-preview{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.order-preview-img{width:44px;height:44px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(139,92,246,.4);flex-shrink:0;background:rgba(0,0,0,.3);cursor:pointer;position:relative}
+.order-preview-img img{width:100%;height:100%;object-fit:cover}
+.order-preview-count{width:44px;height:44px;border-radius:10px;background:rgba(139,92,246,.15);border:1.5px solid rgba(139,92,246,.4);color:#c4b5fd;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0}
+.order-tap-hint{margin-top:10px;font-size:11px;color:#a78bfa;font-weight:700;display:flex;align-items:center;gap:6px;padding-top:10px;border-top:1px dashed rgba(139,92,246,.3)}
+.order-tap-hint i{font-size:12px}
 .order-actions{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .btn-action{width:100%;padding:13px;border:none;border-radius:12px;font-weight:900;font-size:13px;cursor:pointer;font-family:'Cairo',sans-serif;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;text-decoration:none}
 .btn-action:active{transform:scale(.97)}
@@ -204,10 +219,121 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
 .notif-permission-banner .txt{flex:1;font-size:12px;color:#fde047;font-weight:700;line-height:1.5}
 .notif-permission-banner button{padding:8px 14px;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:10px;color:#fff;font-weight:900;font-size:11.5px;cursor:pointer;font-family:'Cairo',sans-serif;flex-shrink:0}
 .hidden{display:none!important}
+.admin-msg-banner{margin:0 20px 15px;padding:14px 16px;background:linear-gradient(135deg,rgba(245,158,11,.25),rgba(239,68,68,.15));border:1.5px solid rgba(245,158,11,.6);border-radius:16px;display:flex;align-items:flex-start;gap:12px;position:relative;animation:msgSlideIn .5s cubic-bezier(.16,1,.3,1);box-shadow:0 10px 30px rgba(245,158,11,.2)}
+@keyframes msgSlideIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.admin-msg-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;box-shadow:0 6px 15px rgba(245,158,11,.4)}
+.admin-msg-text{flex:1;min-width:0;font-size:13px;color:#fef3c7;font-weight:700;line-height:1.6;padding-top:4px;word-wrap:break-word;overflow-wrap:break-word}
+.admin-msg-close{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
+.admin-msg-close:active{transform:scale(.92);background:rgba(239,68,68,.4);border-color:rgba(239,68,68,.6)}
+
+/* ============ PHARMACY WAITING BOX ============ */
+.pharmacy-waiting-box{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(239,68,68,.12));border:1.5px dashed rgba(245,158,11,.6);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;margin-top:12px;animation:pulseWaitBox 2s infinite}
+@keyframes pulseWaitBox{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.3)}50%{box-shadow:0 0 0 8px rgba(245,158,11,0)}}
+.pharmacy-waiting-icon{width:50px;height:50px;border-radius:15px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;flex-shrink:0;box-shadow:0 8px 18px rgba(245,158,11,.4)}
+.pharmacy-waiting-text{flex:1;min-width:0}
+.pharmacy-waiting-title{font-size:14px;font-weight:900;color:#fbbf24;line-height:1.3;margin-bottom:4px}
+.pharmacy-waiting-sub{font-size:11.5px;color:#fde047;font-weight:600;line-height:1.5}
+.pharmacy-price-badge{background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(6,182,212,.15));border:1.5px solid rgba(16,185,129,.5);border-radius:14px;padding:14px 16px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pharmacy-price-badge-text{font-size:12.5px;color:#7dd3fc;font-weight:700}
+.pharmacy-price-badge-value{font-size:24px;font-weight:900;color:#34d399;line-height:1}
+.pharmacy-price-badge-value small{font-size:12px;color:#94a3b8;margin-right:2px}
+
+/* ============ ORDER ACTION SCREEN ============ */
+.order-action-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,#0a0f1e 0%,#090d16 100%);z-index:8001;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);overflow:hidden;max-width:600px;margin:0 auto}
+.order-action-screen.show{transform:translateY(0)}
+.order-action-header{flex-shrink:0;background:linear-gradient(160deg,rgba(139,92,246,.28),rgba(6,182,212,.15));backdrop-filter:blur(20px);padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.1);padding-top:max(12px,env(safe-area-inset-top,12px))}
+.order-action-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.order-action-body::-webkit-scrollbar{width:4px}
+.order-action-body::-webkit-scrollbar-thumb{background:rgba(139,92,246,.3);border-radius:10px}
+
+/* ============ IMAGE VIEWER ============ */
+.image-viewer-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,#0a0f1e 0%,#090d16 100%);z-index:8200;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);overflow:hidden}
+.image-viewer-screen.show{transform:translateX(0)}
+.image-viewer-header{flex-shrink:0;background:linear-gradient(160deg,rgba(6,182,212,.28),rgba(8,145,178,.15));backdrop-filter:blur(20px);padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.1);padding-top:max(12px,env(safe-area-inset-top,12px))}
+.image-viewer-body{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:8px;-webkit-overflow-scrolling:touch}
+.image-viewer-body img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.8);display:block;width:100%;object-fit:contain;cursor:pointer}
+.image-viewer-caption{flex-shrink:0;padding:12px 20px;padding-bottom:max(12px,env(safe-area-inset-bottom,12px));background:linear-gradient(0deg,rgba(9,13,22,.98),rgba(9,13,22,.9));backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.1);text-align:center;color:#fff;font-size:13px;font-weight:900;line-height:1.5}
+
+/* ============ BOTTOM SHEET ============ */
+.bottom-sheet{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(180deg,rgba(30,40,60,.98),rgba(15,23,42,1));border-top-left-radius:28px;border-top-right-radius:28px;border-top:1px solid rgba(139,92,246,.4);z-index:8500;transform:translateY(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);max-height:85vh;overflow-y:auto;padding:12px 0 20px;max-width:600px;margin:0 auto}
+.bottom-sheet.show{transform:translateY(0)}
+.sheet-handle{width:40px;height:4px;background:rgba(255,255,255,.2);border-radius:4px;margin:0 auto 18px}
+.sheet-header{padding:0 22px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px}
+.sheet-icon{width:50px;height:50px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0}
+.sheet-title{font-size:18px;font-weight:900;color:#fff}
+.sheet-sub{font-size:11.5px;color:var(--text-muted);margin-top:3px}
+.sheet-close{margin-right:auto;width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;font-size:14px}
+.sheet-body{padding:20px 22px}
+
+/* ============ SHARED ============ */
+.screen-back-btn{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
+.screen-back-btn:active{transform:scale(.92);background:rgba(139,92,246,.25);border-color:rgba(139,92,246,.4)}
+.screen-header-info{flex:1;min-width:0}
+.screen-header-title{font-size:16px;font-weight:900;color:#fff;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.screen-header-sub{font-size:11.5px;color:rgba(255,255,255,.8);margin-top:2px;display:flex;align-items:center;gap:6px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ============ DETAIL SECTIONS ============ */
+.detail-section{background:linear-gradient(160deg,rgba(30,41,59,.7),rgba(15,23,42,.9));border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px;position:relative;overflow:hidden}
+.detail-section-title{font-size:12.5px;font-weight:900;color:#a78bfa;margin-bottom:10px;display:flex;align-items:center;gap:7px;line-height:1.4}
+.detail-section-title i{width:26px;height:26px;background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(6,182,212,.15));border-radius:7px;display:flex;align-items:center;justify-content:center;color:#c4b5fd;font-size:12px;flex-shrink:0}
+.detail-order-type{display:flex;align-items:center;gap:12px}
+.detail-order-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;box-shadow:0 8px 18px rgba(0,0,0,.4)}
+.detail-order-info{flex:1;min-width:0}
+.detail-order-name{font-size:15px;font-weight:900;color:#fff;margin-bottom:3px;line-height:1.3}
+.detail-order-time{font-size:11.5px;color:var(--text-muted);display:flex;align-items:center;gap:5px;line-height:1.4}
+.detail-order-time i{color:#22d3ee;font-size:11px}
+.detail-status-badge{padding:4px 11px;border-radius:14px;font-size:10.5px;font-weight:900;display:inline-flex;align-items:center;gap:5px;margin-top:8px;line-height:1.3}
+.detail-status-new{background:rgba(245,158,11,.2);color:#fbbf24;border:1px solid rgba(245,158,11,.5)}
+.detail-status-active{background:rgba(139,92,246,.2);color:#a78bfa;border:1px solid rgba(139,92,246,.5)}
+.detail-status-done{background:rgba(16,185,129,.2);color:#34d399;border:1px solid rgba(16,185,129,.5)}
+.detail-image-card{width:100%;border-radius:12px;overflow:hidden;border:1.5px solid rgba(6,182,212,.5);background:rgba(0,0,0,.3);position:relative;cursor:pointer;transition:.2s}
+.detail-image-card:active{transform:scale(.98)}
+.detail-image-card img{width:100%;height:auto;display:block;max-height:400px;object-fit:cover}
+.detail-image-card-label{background:linear-gradient(90deg,rgba(6,182,212,.25),rgba(6,182,212,.1));color:#22d3ee;padding:8px 12px;font-size:11px;font-weight:900;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(6,182,212,.3);line-height:1.4}
+.detail-image-card-label i{font-size:11px;flex-shrink:0}
+.detail-items-list{display:flex;flex-direction:column;gap:8px}
+.detail-item-row{background:rgba(10,15,28,.6);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:9px;display:flex;align-items:center;gap:10px;overflow:hidden}
+.detail-item-img{width:52px;height:52px;border-radius:10px;overflow:hidden;flex-shrink:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;border:1px solid rgba(139,92,246,.25);cursor:pointer;position:relative}
+.detail-item-img img{width:100%;height:100%;object-fit:cover;display:block}
+.detail-item-img i{font-size:20px;color:rgba(139,92,246,.4)}
+.detail-item-info{flex:1;min-width:0;overflow:hidden}
+.detail-item-name{font-size:12.5px;font-weight:900;color:#fff;margin-bottom:3px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.detail-item-meta{font-size:10.5px;color:var(--text-muted);display:flex;gap:8px;flex-wrap:wrap;line-height:1.4}
+.detail-item-meta b{color:#22d3ee;font-weight:800}
+.detail-item-price{font-size:13.5px;font-weight:900;color:var(--success);flex-shrink:0;text-align:left;line-height:1.3;min-width:60px}
+.detail-item-price small{display:block;font-size:9.5px;color:var(--text-muted);font-weight:600;margin-top:2px}
+.detail-info-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);min-height:48px}
+.detail-info-row:last-child{border-bottom:none}
+.detail-info-icon{width:34px;height:34px;border-radius:10px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);display:flex;align-items:center;justify-content:center;font-size:13px;color:#c4b5fd;flex-shrink:0}
+.detail-info-content{flex:1;min-width:0;overflow:hidden}
+.detail-info-label{font-size:10.5px;color:var(--text-muted);font-weight:700;margin-bottom:3px;letter-spacing:.3px;line-height:1.4}
+.detail-info-value{font-size:13px;font-weight:900;color:#fff;line-height:1.45;word-wrap:break-word;overflow-wrap:break-word;word-break:break-word}
+.detail-info-value.phone{direction:ltr;text-align:left;font-family:'Courier New',monospace;letter-spacing:.5px;color:#22d3ee;font-size:14px;font-weight:900}
+.detail-info-action{width:34px;height:34px;border-radius:10px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);display:flex;align-items:center;justify-content:center;color:#25D366;font-size:13px;text-decoration:none;flex-shrink:0;transition:.2s}
+.detail-info-action:active{transform:scale(.92);background:rgba(37,211,102,.3)}
+.detail-price-box{background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(6,182,212,.12));border:1.5px solid rgba(16,185,129,.4);border-radius:14px;padding:16px 14px;text-align:center;position:relative;overflow:hidden}
+.detail-price-box::before{content:'';position:absolute;top:-50%;right:-30%;width:180px;height:180px;background:radial-gradient(circle,rgba(16,185,129,.15),transparent 70%);border-radius:50%}
+.detail-price-label{font-size:11.5px;color:#7dd3fc;font-weight:800;position:relative;z-index:1;margin-bottom:8px;letter-spacing:.3px}
+.detail-price-value{font-size:36px;font-weight:900;color:#34d399;line-height:1;position:relative;z-index:1;letter-spacing:-1.5px;display:flex;align-items:center;justify-content:center;gap:6px}
+.detail-price-value .price-num{font-size:36px}
+.detail-price-value .price-unit{font-size:14px;color:#94a3b8;font-weight:700;margin-top:6px}
+.detail-price-commission{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(251,191,36,.4);font-size:12px;color:var(--text-muted);position:relative;z-index:1;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.4}
+.detail-price-commission b{color:#fbbf24;font-weight:900;font-size:15px}
+.detail-text-content{font-size:13px;color:#e2e8f0;line-height:1.7;font-weight:600;word-wrap:break-word;overflow-wrap:break-word;white-space:pre-wrap}
+.detail-actions{flex-shrink:0;padding:12px;padding-bottom:max(12px,env(safe-area-inset-bottom,12px));background:linear-gradient(0deg,rgba(9,13,22,.98),rgba(9,13,22,.9));backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:8px}
+.detail-actions.empty{display:none}
+.detail-btn{padding:13px;border:none;border-radius:12px;font-weight:900;font-size:13.5px;cursor:pointer;font-family:'Cairo',sans-serif;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;text-decoration:none;line-height:1.3}
+.detail-btn:active{transform:scale(.98)}
+.detail-btn-finish{background:linear-gradient(135deg,#7c3aed,#8b5cf6);box-shadow:0 12px 25px rgba(139,92,246,.4)}
+.detail-btn-call{background:linear-gradient(135deg,#0ea5e9,#0284c7);box-shadow:0 12px 25px rgba(14,165,233,.35)}
+.detail-btn-details{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 12px 25px rgba(245,158,11,.4)}
+.detail-btn i{font-size:15px;flex-shrink:0}
+
 @media(min-width:500px){.stats-row{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
-<body><div class="splash" id="splashScreen">
+<body>
+<div class="splash" id="splashScreen">
     <div class="splash-logo"><i class="fas fa-motorcycle"></i></div>
     <div class="splash-title">سائق مشوار</div>
     <div class="splash-sub">بوابة السائق</div>
@@ -250,6 +376,12 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
             </div>
         </div>
 
+        <div class="admin-msg-banner" id="adminMsgBanner" style="display:none">
+            <div class="admin-msg-icon">📢</div>
+            <div class="admin-msg-text" id="adminMsgText">-</div>
+            <button class="admin-msg-close" onclick="closeAdminMessage()"><i class="fas fa-times"></i></button>
+        </div>
+
         <div class="notif-permission-banner" id="notifPermissionBanner">
             <i class="fas fa-bell"></i>
             <div class="txt">فعّل الإشعارات عشان يوصلك تنبيه بأي طلب جديد</div>
@@ -269,6 +401,8 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
             <div class="stat-box"><i class="fas fa-box" style="color:var(--primary)"></i><div class="sv" id="statTodayOrders">0</div><div class="sl">طلبات النهارده</div></div>
             <div class="stat-box"><i class="fas fa-check-circle" style="color:var(--success)"></i><div class="sv" id="statCompleted">0</div><div class="sl">مكتملة</div></div>
         </div>
+
+        <div class="filter-tabs" id="homeFilterTabs"></div>
 
         <div class="section">
             <div class="section-header">
@@ -292,6 +426,9 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
             <button class="sub-tab active" id="subtab-active" onclick="switchOrdersTab('active')"><i class="fas fa-motorcycle"></i> جارية</button>
             <button class="sub-tab" id="subtab-history" onclick="switchOrdersTab('history')"><i class="fas fa-archive"></i> أرشيف</button>
         </div>
+
+        <div class="filter-tabs" id="ordersFilterTabs"></div>
+
         <div id="activeOrdersContainer" style="padding:0 20px"></div>
         <div id="historyOrdersContainer" style="padding:0 20px;display:none"></div>
     </div>
@@ -362,7 +499,7 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
         <div class="section" style="margin-top:20px;text-align:center">
             <div style="font-size:11px;color:var(--text-dim);line-height:1.8">
                 <div style="font-weight:900;color:var(--text-muted);margin-bottom:4px">سائق مشوار</div>
-                <div>بوابة السائق • v1.0</div>
+                <div>بوابة السائق • v1.7</div>
                 <div style="margin-top:6px">تصميم وِدّ</div>
             </div>
         </div>
@@ -416,7 +553,62 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
 
 <div class="toast" id="toast"><i class="fas fa-info-circle"></i><span id="toastMessage">رسالة</span></div>
 
-<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<div class="order-action-screen" id="orderActionScreen">
+    <div class="order-action-header">
+        <button class="screen-back-btn" onclick="closeOrderActions()"><i class="fas fa-arrow-right"></i></button>
+        <div class="screen-header-info">
+            <div class="screen-header-title" id="orderActionTitle">تفاصيل الطلب</div>
+            <div class="screen-header-sub" id="orderActionSub">-</div>
+        </div>
+        <a class="detail-call-btn" id="orderActionCallBtn" href="tel:"><i class="fas fa-phone"></i></a>
+    </div>
+    <div class="order-action-body" id="orderActionBody"></div>
+    <div id="pharmacyWaitingBox" class="pharmacy-waiting-box" style="display:none">
+        <div class="pharmacy-waiting-icon">⏳</div>
+        <div class="pharmacy-waiting-text">
+            <div class="pharmacy-waiting-title">في انتظار سعر الصيدلية</div>
+            <div class="pharmacy-waiting-sub">الصيدلية بتراجع الروشتة وتحدد السعر</div>
+        </div>
+    </div>
+    <div id="pharmacyPriceBadge" class="pharmacy-price-badge" style="display:none">
+        <div class="pharmacy-price-badge-text">💰 سعر الصيدلية</div>
+        <div class="pharmacy-price-badge-value" id="pharmacyPriceValue">0 <small>ج</small></div>
+    </div>
+    <div class="detail-actions" id="orderActionButtons"></div>
+</div>
+
+<div class="image-viewer-screen" id="imageViewerScreen">
+    <div class="image-viewer-header">
+        <button class="screen-back-btn" onclick="closeImageViewer()"><i class="fas fa-arrow-right"></i></button>
+        <div class="screen-header-info">
+            <div class="screen-header-title" id="imageViewerTitle">عرض الصورة</div>
+            <div class="screen-header-sub"><i class="fas fa-hand-pointer"></i> اضغط الصورة للتكبير</div>
+        </div>
+    </div>
+    <div class="image-viewer-body">
+        <img id="imageViewerImg" src="" alt="" onclick="openInNativeGallery()">
+    </div>
+    <div class="image-viewer-caption" id="imageViewerCaption">-</div>
+</div>
+
+<div class="modal-overlay" id="contentSheetOverlay" onclick="closeContentSheet()"></div>
+<div class="bottom-sheet" id="contentSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+        <div class="sheet-icon" id="contentSheetIcon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-list"></i></div>
+        <div>
+            <div class="sheet-title" id="contentSheetTitle">التفاصيل</div>
+            <div class="sheet-sub" id="contentSheetSub">-</div>
+        </div>
+        <button class="sheet-close" onclick="closeContentSheet()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sheet-body" id="contentSheetBody"></div>
+</div>
+
+<audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+<audio id="adminMsgSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
 const firebaseConfig={apiKey:"AIzaSyAR98tJfqxO0_LZT7GRn-peOqQB1PgP6D4",authDomain:"family-4ff2a.firebaseapp.com",databaseURL:"https://family-4ff2a-default-rtdb.firebaseio.com",projectId:"family-4ff2a"};
@@ -427,9 +619,12 @@ let driverData=null;
 let selectedArea=null;
 let cachedAreas=[];
 let activeOrdersTab='active';
+let currentFilter='all';
 let lastNewOrdersCount=0;
 let allOrdersCache={};
 let supportWhatsapp="01115699940";
+let currentActionOrderId=null;
+let adminMsgsCache={};
 
 function $id(id){return document.getElementById(id);}
 function showToast(msg,type='info'){
@@ -452,92 +647,51 @@ function formatTime(ts){
     return `${h}:${m} ${ap}`;
 }
 
-// ✅ OneSignal — تسجيل السائق (محدث)
 async function registerOneSignal(){
-    if(!driverData){
-        console.log('⚠️ No driverData — skip OneSignal');
-        return;
-    }
-    
-    const clean = driverData.phone.replace(/\D/g,'');
-    console.log('📝 Registering OneSignal for:', clean);
-    
-    if(!window.OneSignal){
-        console.log('⏳ OneSignal not ready — retry in 1s');
-        setTimeout(registerOneSignal, 1000);
-        return;
-    }
-    
+    if(!driverData){console.log('⚠️ No driverData');return;}
+    const clean=driverData.phone.replace(/\D/g,'');
+    if(!window.OneSignal){setTimeout(registerOneSignal,1000);return;}
     try{
-        console.log('🔔 Requesting permission...');
-        const perm = await window.OneSignal.Notifications.requestPermission();
-        console.log('✅ Permission result:', perm);
-        
-        if(!perm){
-            console.log('❌ Permission denied — stop');
-            return;
-        }
-        
-        console.log('👤 Logging in with:', clean);
+        const perm=await window.OneSignal.Notifications.requestPermission();
+        if(!perm){console.log('❌ Permission denied');return;}
         await window.OneSignal.login(clean);
-        console.log('✅ Logged in');
-        
         await window.OneSignal.User.addTags({
-            driverPhone: driverData.phone,
-            driverName: driverData.name,
-            driverArea: driverData.area,
-            driverKey: driverData.key,
-            driverRole: driverData.role || 'سائق',
-            role: driverData.role || 'سائق'
+            driverPhone:driverData.phone,
+            driverName:driverData.name,
+            driverArea:driverData.area,
+            driverKey:driverData.key,
+            driverRole:driverData.role||'سائق',
+            role:driverData.role||'سائق'
         });
-        console.log('✅ Tags added');
-        
-        let osId = null;
-        for(let i = 1; i <= 5; i++){
-            await new Promise(r => setTimeout(r, 1500));
-            osId = window.OneSignal.User.PushSubscription.id;
-            console.log(`🆔 Try ${i}:`, osId);
-            if(osId) break;
+        let osId=null;
+        for(let i=1;i<=5;i++){
+            await new Promise(r=>setTimeout(r,1500));
+            osId=window.OneSignal.User.PushSubscription.id;
+            if(osId)break;
         }
-        
-        if(!osId){
-            console.log('❌ No OneSignal ID after 5 tries');
-            return;
-        }
-        
+        if(!osId){console.log('❌ No OneSignal ID');return;}
         await db.ref(`push_subscriptions/${driverData.area}/${clean}`).update({
-            oneSignalId: osId,
-            driverKey: driverData.key,
-            driverName: driverData.name,
-            driverPhone: driverData.phone,
-            area: driverData.area,
-            role: driverData.role || 'سائق',
-            driverRole: driverData.role || 'سائق',
-            updatedAt: Date.now()
+            oneSignalId:osId,
+            driverKey:driverData.key,
+            driverName:driverData.name,
+            driverPhone:driverData.phone,
+            area:driverData.area,
+            role:driverData.role||'سائق',
+            driverRole:driverData.role||'سائق',
+            updatedAt:Date.now()
         });
-        console.log('✅✅ Saved to Firebase:', osId);
-        
-        if(typeof showToast === 'function'){
-            showToast('✅ تم تفعيل الإشعارات','success');
-        }
-        
+        console.log('✅ OneSignal registered:',osId);
     }catch(err){
-        console.log('❌ OneSignal error:', err.message, err);
-        if(typeof showToast === 'function'){
-            showToast('⚠️ فشل تفعيل الإشعارات','error');
-        }
+        console.log('❌ OneSignal error:',err.message);
     }
 }
 
 async function requestNotifPermission(){
-    if(!('Notification' in window)){
-        showToast('المتصفح مش بيدعم الإشعارات','error');
-        return;
-    }
-    const perm = await Notification.requestPermission();
-    if(perm === 'granted'){
+    if(!('Notification' in window)){showToast('المتصفح مش بيدعم الإشعارات','error');return;}
+    const perm=await Notification.requestPermission();
+    if(perm==='granted'){
         showToast('✅ تم تفعيل الإشعارات','success');
-        $id('profileNotifStatus').innerText = 'مفعّلة ✅';
+        $id('profileNotifStatus').innerText='مفعّلة ✅';
         $id('notifPermissionBanner').classList.remove('show');
         registerOneSignal();
     }else{
@@ -547,43 +701,43 @@ async function requestNotifPermission(){
 
 function updateNotifStatus(){
     if(!('Notification' in window))return;
-    const perm = Notification.permission;
-    const status = $id('profileNotifStatus');
-    if(perm === 'granted'){
-        if(status)status.innerText = 'مفعّلة ✅';
+    const perm=Notification.permission;
+    const status=$id('profileNotifStatus');
+    if(perm==='granted'){
+        if(status)status.innerText='مفعّلة ✅';
         $id('notifPermissionBanner').classList.remove('show');
-    }else if(perm === 'denied'){
-        if(status)status.innerText = 'مرفوضة ❌';
+    }else if(perm==='denied'){
+        if(status)status.innerText='مرفوضة ❌';
         $id('notifPermissionBanner').classList.remove('show');
     }else{
-        if(status)status.innerText = 'غير مفعّلة';
+        if(status)status.innerText='غير مفعّلة';
         $id('notifPermissionBanner').classList.add('show');
     }
 }
 
 function openWhatsappSupport(){
-    const num = supportWhatsapp.replace(/\D/g,'');
-    const finalNum = num.startsWith('0') ? '2'+num : num;
-    const msg = encodeURIComponent('السلام عليكم، محتاج مساعدة في تطبيق سائق مشوار 🙏');
+    const num=supportWhatsapp.replace(/\D/g,'');
+    const finalNum=num.startsWith('0')?'2'+num:num;
+    const msg=encodeURIComponent('السلام عليكم، محتاج مساعدة في تطبيق سائق مشوار 🙏');
     window.open('https://wa.me/'+finalNum+'?text='+msg,'_blank');
 }
 
 function openAreaPicker(){
-    const list = $id('areasListContainer');
+    const list=$id('areasListContainer');
     if(!list)return;
-    if(cachedAreas.length === 0){
+    if(cachedAreas.length===0){
         list.innerHTML='<div class="empty-state" style="padding:30px 20px"><i class="fas fa-map"></i><p>لا توجد مناطق متاحة حالياً</p></div>';
     }else{
         let html='';
         cachedAreas.forEach(a=>{
-            const isSel = (a === selectedArea);
+            const isSel=(a===selectedArea);
             html+=`<div class="area-item ${isSel?'selected':''}" onclick="pickArea('${a}')">
                 <div class="area-item-icon"><i class="fas fa-map-marker-alt"></i></div>
                 <div class="area-item-name">${a}</div>
                 ${isSel?'<i class="fas fa-check-circle area-item-check"></i>':''}
             </div>`;
         });
-        list.innerHTML = html;
+        list.innerHTML=html;
     }
     $id('areaModalOverlay').classList.add('show');
     $id('areaModal').classList.add('show');
@@ -593,10 +747,10 @@ function closeAreaPicker(){
     $id('areaModal').classList.remove('show');
 }
 function pickArea(area){
-    selectedArea = area;
-    const btn = $id('areaTriggerBtn');
-    const label = $id('areaTriggerLabel');
-    if(label)label.innerText = '📍 '+area;
+    selectedArea=area;
+    const btn=$id('areaTriggerBtn');
+    const label=$id('areaTriggerLabel');
+    if(label)label.innerText='📍 '+area;
     if(btn)btn.classList.add('filled');
     closeAreaPicker();
 }
@@ -604,13 +758,13 @@ function pickArea(area){
 let confirmCb=null;
 function showConfirm(icon,title,msg,cb){
     const i=$id('confirmIcon');
-    if(i)i.innerHTML = `<i class="fas ${icon}"></i>`;
-    $id('confirmTitle').innerText = title;
-    $id('confirmMsg').innerText = msg;
-    confirmCb = cb;
+    if(i)i.innerHTML=`<i class="fas ${icon}"></i>`;
+    $id('confirmTitle').innerText=title;
+    $id('confirmMsg').innerText=msg;
+    confirmCb=cb;
     $id('confirmOverlay').classList.add('show');
     $id('confirmModal').classList.add('show');
-    $id('confirmYesBtn').onclick = ()=>{closeConfirm();if(confirmCb)confirmCb();};
+    $id('confirmYesBtn').onclick=()=>{closeConfirm();if(confirmCb)confirmCb();};
 }
 function closeConfirm(){
     $id('confirmOverlay').classList.remove('show');
@@ -618,8 +772,8 @@ function closeConfirm(){
 }
 
 function showSuccess(title,msg){
-    $id('successTitle').innerText = title;
-    $id('successMsg').innerText = msg;
+    $id('successTitle').innerText=title;
+    $id('successMsg').innerText=msg;
     $id('successOverlay').classList.add('show');
     $id('successModal').classList.add('show');
 }
@@ -629,52 +783,52 @@ function closeSuccess(){
 }
 
 setTimeout(()=>{
-    const sp = $id('splashScreen');
+    const sp=$id('splashScreen');
     if(sp)sp.classList.add('hide');
-    const saved = localStorage.getItem('driver_data');
+    const saved=localStorage.getItem('driver_data');
     if(saved){
         try{
-            driverData = JSON.parse(saved);
+            driverData=JSON.parse(saved);
             startApp();
         }catch(e){
-            $id('loginSection').style.display = 'flex';
+            $id('loginSection').style.display='flex';
             setTimeout(()=>{if(sp)sp.style.display='none';},600);
         }
     }else{
-        $id('loginSection').style.display = 'flex';
+        $id('loginSection').style.display='flex';
         setTimeout(()=>{if(sp)sp.style.display='none';},600);
     }
 },2200);
 
 db.ref('areas').on('value',snap=>{
-    cachedAreas = [];
+    cachedAreas=[];
     snap.forEach(c=>{
-        const d = c.val();
-        if(d && d.name && d.active !== false)cachedAreas.push(d.name);
+        const d=c.val();
+        if(d&&d.name&&d.active!==false)cachedAreas.push(d.name);
     });
 });
 db.ref('settings/support/whatsapp').on('value',s=>{
-    const v = s.val();
-    if(v)supportWhatsapp = v;
+    const v=s.val();
+    if(v)supportWhatsapp=v;
 });
 
 function driverLogin(){
-    const phone = ($id('phoneInput')||{}).value?.trim()||'';
-    const code = ($id('codeInput')||{}).value?.trim()||'';
+    const phone=($id('phoneInput')||{}).value?.trim()||'';
+    const code=($id('codeInput')||{}).value?.trim()||'';
     if(!selectedArea){return showToast('اختر منطقتك أولاً','error');}
-    if(phone.length < 11){return showToast('رقم الموبايل لازم 11 رقم','error');}
+    if(phone.length<11){return showToast('رقم الموبايل لازم 11 رقم','error');}
     if(!code){return showToast('اكتب كود الدخول','error');}
     db.ref(`providers/${selectedArea}`).once('value').then(snap=>{
-        let found = null;
+        let found=null;
         snap.forEach(c=>{
-            const p = c.val();
-            if(p && p.phone === phone && p.code === code){
-                found = {...p, area: selectedArea, key: c.key};
+            const p=c.val();
+            if(p&&p.phone===phone&&p.code===code){
+                found={...p,area:selectedArea,key:c.key};
             }
         });
         if(found){
-            driverData = found;
-            localStorage.setItem('driver_data', JSON.stringify(driverData));
+            driverData=found;
+            localStorage.setItem('driver_data',JSON.stringify(driverData));
             startApp();
         }else{
             showToast('رقم الموبايل أو الكود غلط','error');
@@ -683,308 +837,840 @@ function driverLogin(){
 }
 
 function startApp(){
-    $id('loginSection').style.display = 'none';
-    $id('appSection').style.display = 'block';
-    const hour = new Date().getHours();
-    const greet = hour<12?'صباح الخير':hour<18?'مساء الخير':'مساء الخير';
-    $id('greetText').innerText = greet+' 👋';
-    $id('displayName').innerText = driverData.name || 'كابتن';
-    $id('userAvatar').innerText = (driverData.name||'ك').charAt(0).toUpperCase();
-    $id('displayArea').innerText = driverData.area || '';
-    const roleBadge = $id('roleBadge');
+    $id('loginSection').style.display='none';
+    $id('appSection').style.display='block';
+    const hour=new Date().getHours();
+    const greet=hour<12?'صباح الخير':hour<18?'مساء الخير':'مساء الخير';
+    $id('greetText').innerText=greet+' 👋';
+    $id('displayName').innerText=driverData.name||'كابتن';
+    $id('userAvatar').innerText=(driverData.name||'ك').charAt(0).toUpperCase();
+    $id('displayArea').innerText=driverData.area||'';
+    const roleBadge=$id('roleBadge');
     if(roleBadge){
-        const role = driverData.role || '';
-        if(role.includes('توك') || role.includes('مشوار'))roleBadge.innerText = '🛺 سائق توك';
-        else roleBadge.innerText = '🛵 مندوب عام';
+        const role=driverData.role||'';
+        if(role.includes('توك')||role.includes('مشوار'))roleBadge.innerText='🛺 سائق توك';
+        else if(role.includes('شحن'))roleBadge.innerText='🚚 مندوب شحن';
+        else roleBadge.innerText='🛵 مندوب عام';
     }
-    $id('profileAvatar').innerText = (driverData.name||'ك').charAt(0).toUpperCase();
-    $id('profileName').innerText = driverData.name || '';
-    $id('profilePhone').innerText = driverData.phone || '';
-    $id('profileArea').innerText = driverData.area || '';
+    $id('profileAvatar').innerText=(driverData.name||'ك').charAt(0).toUpperCase();
+    $id('profileName').innerText=driverData.name||'';
+    $id('profilePhone').innerText=driverData.phone||'';
+    $id('profileArea').innerText=driverData.area||'';
     updateNotifStatus();
+    renderFilterTabs();
     listenToOrders();
+    listenToAdminMessages();
     registerOneSignal();
 }
 
 function switchPage(page){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
-    const p = $id('page-'+page);if(p)p.classList.add('active');
-    const n = $id('nav-'+page);if(n)n.classList.add('active');
+    const p=$id('page-'+page);if(p)p.classList.add('active');
+    const n=$id('nav-'+page);if(n)n.classList.add('active');
     window.scrollTo(0,0);
 }
 
 function switchOrdersTab(tab){
-    activeOrdersTab = tab;
-    $id('subtab-active').classList.toggle('active', tab==='active');
-    $id('subtab-history').classList.toggle('active', tab==='history');
-    $id('activeOrdersContainer').style.display = (tab==='active')?'block':'none';
-    $id('historyOrdersContainer').style.display = (tab==='history')?'block':'none';
+    activeOrdersTab=tab;
+    $id('subtab-active').classList.toggle('active',tab==='active');
+    $id('subtab-history').classList.toggle('active',tab==='history');
+    $id('activeOrdersContainer').style.display=(tab==='active')?'block':'none';
+    $id('historyOrdersContainer').style.display=(tab==='history')?'block':'none';
     renderOrders();
 }
 
 function listenToOrders(){
     db.ref('orders').on('value',snap=>{
-        allOrdersCache = {};
+        allOrdersCache={};
         snap.forEach(c=>{
-            allOrdersCache[c.key] = c.val();
+            allOrdersCache[c.key]=c.val();
         });
         renderOrders();
         updateStats();
         updateWallet();
         checkNewOrdersAlert();
+        // ✅ تحديث شاشة الطلب لو مفتوحة
+        if(currentActionOrderId && allOrdersCache[currentActionOrderId]){
+            updateOrderActionScreen(currentActionOrderId);
+        }
     });
 }
 
 function getDriverType(){
-    const role = driverData.role || '';
-    if(role.includes('توك') || role.includes('مشوار'))return 'tuktuk';
+    const role=driverData.role||'';
+    if(role.includes('توك')||role.includes('مشوار'))return 'tuktuk';
+    if(role.includes('شحن'))return 'shipping';
     return 'delegate';
+}
+
+function getAllowedFilters(){
+    const type=getDriverType();
+    if(type==='tuktuk'){
+        return [
+            {id:'all',label:'الكل',icon:'📋'},
+            {id:'trip',label:'مشوار',icon:'🛵'}
+        ];
+    }
+    if(type==='shipping'){
+        return [
+            {id:'all',label:'الكل',icon:'📋'},
+            {id:'shipping',label:'شحن',icon:'🚚'}
+        ];
+    }
+    return [
+        {id:'all',label:'الكل',icon:'📋'},
+        {id:'market',label:'ماركت',icon:'🛒'},
+        {id:'pharma',label:'صيدلية',icon:'💊'},
+        {id:'grocery',label:'خضار',icon:'🥕'},
+        {id:'custom',label:'اطلب حاجة',icon:'✨'}
+    ];
+}
+
+function getOrderFilterType(o){
+    if(!o)return 'other';
+    const type=(o.type||'').trim();
+    if(type.includes('مشوار')||type.includes('طرد'))return 'trip';
+    if(type.includes('ماركت')||o.isMarketOrder)return 'market';
+    if(type.includes('صيدلية'))return 'pharma';
+    if(type.includes('خضار'))return 'grocery';
+    if(type.includes('شحنة')||o.isShipping)return 'shipping';
+    if(type.includes('اطلب أي حاجة')||type.includes('مخصصة')||o.orderType==='custom')return 'custom';
+    return 'other';
+}
+
+function orderBelongsToDriver(o){
+    if(!o||!driverData)return false;
+    const type=getDriverType();
+    const filter=getOrderFilterType(o);
+    if(type==='tuktuk')return filter==='trip';
+    if(type==='shipping')return filter==='shipping';
+    return (filter==='market'||filter==='pharma'||filter==='grocery'||filter==='custom');
+}
+
+function renderFilterTabs(){
+    const filters=getAllowedFilters();
+    const homeTabs=$id('homeFilterTabs');
+    const ordersTabs=$id('ordersFilterTabs');
+    const newOrders=getOrdersByStatus('new');
+    const activeOrders=getOrdersByStatus('active');
+    const historyOrders=getOrdersByStatus('history');
+    
+    function buildTabsHtml(orders){
+        let html='';
+        filters.forEach(f=>{
+            const isActive=(currentFilter===f.id);
+            let count=0;
+            if(f.id==='all')count=orders.length;
+            else count=orders.filter(o=>getOrderFilterType(o)===f.id).length;
+            html+=`<button class="filter-tab ${isActive?'active':''}" onclick="setFilter('${f.id}')">
+                <span class="filter-tab-icon">${f.icon}</span>${f.label}
+                ${count>0?`<span class="tab-count">${count}</span>`:''}
+            </button>`;
+        });
+        return html;
+    }
+    
+    if(homeTabs)homeTabs.innerHTML=buildTabsHtml(newOrders);
+    if(ordersTabs){
+        const source=activeOrdersTab==='active'?activeOrders:historyOrders;
+        ordersTabs.innerHTML=buildTabsHtml(source);
+    }
+}
+
+function setFilter(filterId){
+    currentFilter=filterId;
+    renderOrders();
 }
 
 function getActiveOrdersCount(){
     if(!driverData)return 0;
     return Object.keys(allOrdersCache).filter(id=>{
-        const o = allOrdersCache[id];
+        const o=allOrdersCache[id];
         if(!o)return false;
-        if(o.status !== 'active')return false;
-        return (o.driverKey === driverData.key) || (o.driverPhone === driverData.phone);
+        if(o.status!=='active')return false;
+        return (o.driverKey===driverData.key)||(o.driverPhone===driverData.phone);
     }).length;
 }
 
 function getMaxOrders(){
-    return getDriverType() === 'tuktuk' ? 1 : 3;
+    return getDriverType()==='tuktuk'?1:3;
 }
 
 function hasReachedMaxOrders(){
-    return getActiveOrdersCount() >= getMaxOrders();
-}
-
-function hasActiveOrder(){
-    return getActiveOrdersCount() > 0;
+    return getActiveOrdersCount()>=getMaxOrders();
 }
 
 function getOrdersByStatus(status){
-    const list = [];
-    const area = driverData.area;
-    const driverType = getDriverType();
-    if(status === 'new' && hasReachedMaxOrders())return [];
+    const list=[];
+    const area=driverData.area;
+    if(status==='new'&&hasReachedMaxOrders())return [];
     Object.keys(allOrdersCache).forEach(id=>{
-        const o = allOrdersCache[id];
+        const o=allOrdersCache[id];
         if(!o)return;
-        if(o.isShipping)return;
-        const orderArea = o.customerArea || o.from;
-        if(orderArea && orderArea !== area)return;
-        const type = (o.type||'').trim();
-        const orderIsTrip = type.includes('مشوار') || type.includes('طرد');
-        if(driverType === 'tuktuk' && !orderIsTrip)return;
-        if(driverType === 'delegate' && orderIsTrip)return;
-        if(status === 'new' && o.status !== 'ready_for_driver')return;
-        if(status === 'active' && o.status !== 'active')return;
-        if(status === 'history'){
-            if(o.driverKey !== driverData.key)return;
-            if(o.status !== 'completed' && o.status !== 'archived')return;
+        if(o.isShipping&&getDriverType()!=='shipping')return;
+        if(!o.isShipping&&getDriverType()==='shipping')return;
+        const orderArea=o.customerArea||o.from;
+        if(orderArea&&orderArea!==area)return;
+        if(!orderBelongsToDriver(o))return;
+        if(status==='new'&&o.status!=='ready_for_driver')return;
+        if(status==='active'&&o.status!=='active')return;
+        if(status==='history'){
+            if(o.driverKey!==driverData.key)return;
+            if(o.status!=='completed'&&o.status!=='archived')return;
         }
-        list.push({id, ...o});
+        if(currentFilter!=='all'){
+            if(getOrderFilterType(o)!==currentFilter)return;
+        }
+        list.push({id,...o});
     });
     list.sort((a,b)=>(b.time||0)-(a.time||0));
     return list;
 }
-</script><script>
+
+/* ============ تحديث شاشة الطلب بدون إغلاقها ============ */
+function updateOrderActionScreen(orderId){
+    const o=allOrdersCache[orderId];
+    if(!o)return;
+    // ✅ تحديث صندوق انتظار الصيدلية
+    updatePharmacyBox(orderId,o);
+    // ✅ تحديث زر الإنهاء
+    const buttons=$id('orderActionButtons');
+    if(buttons && o.status==='active' && o.driverKey===driverData.key){
+        const phone=o.customerPhone||o.phone||'';
+        const isPharma=getOrderFilterType(o)==='pharma';
+        const hasPrice=o.pharmacyPrice && Number(o.pharmacyPrice)>0;
+        const canFinish=!isPharma || hasPrice;
+        
+        let buttonsHtml=`<a href="tel:${phone}" class="detail-btn detail-btn-call"><i class="fas fa-phone"></i> اتصال بالعميل</a>`;
+        
+        if(canFinish){
+            buttonsHtml+=`<button class="detail-btn detail-btn-finish" onclick="finishOrderFromAction('${orderId}')">
+                <i class="fas fa-check-double"></i> إنهاء الطلب
+            </button>`;
+        }else{
+            buttonsHtml+=`<button class="detail-btn" style="background:rgba(245,158,11,.2);color:#fbbf24;border:1.5px solid rgba(245,158,11,.5);cursor:not-allowed" disabled>
+                <i class="fas fa-hourglass-half"></i> في انتظار سعر الصيدلية
+            </button>`;
+        }
+        buttons.classList.remove('empty');
+        buttons.innerHTML=buttonsHtml;
+    }
+}
+
+/* ============ عرض صندوق انتظار الصيدلية ============ */
+function updatePharmacyBox(orderId,o){
+    const waitingBox=$id('pharmacyWaitingBox');
+    const priceBadge=$id('pharmacyPriceBadge');
+    const priceValue=$id('pharmacyPriceValue');
+    
+    if(!waitingBox||!priceBadge)return;
+    
+    const isPharma=getOrderFilterType(o)==='pharma';
+    const hasPrice=o.pharmacyPrice && Number(o.pharmacyPrice)>0;
+    
+    if(!isPharma){
+        waitingBox.style.display='none';
+        priceBadge.style.display='none';
+        return;
+    }
+    
+    if(hasPrice){
+        waitingBox.style.display='none';
+        priceBadge.style.display='flex';
+        if(priceValue)priceValue.innerHTML=`${Number(o.pharmacyPrice).toFixed(0)} <small>ج</small>`;
+    }else{
+        waitingBox.style.display='flex';
+        priceBadge.style.display='none';
+    }
+}
+
+/* ============ شاشة الطلب الجاري ============ */
+function openOrderActions(orderId){
+    const o=allOrdersCache[orderId];
+    if(!o)return;
+    
+    if(o.status==='ready_for_driver'){
+        showToast('اقبل الطلب الأول عشان تشوف التفاصيل','info');
+        return;
+    }
+    
+    currentActionOrderId=orderId;
+    
+    const type=o.type||'طلب';
+    const color=getOrderColor(type);
+    const icon=getOrderIcon(type);
+    const phone=o.customerPhone||o.phone||'';
+    const custName=o.customerName||o.name||'عميل';
+    const price=Number(o.price)||0;
+    const commission=Number(o.commission)||0;
+    const timeStr=o.orderTimeString||formatTime(o.time);
+    const address=o.to||o.toAddr||'-';
+    const pharmacyPrice=Number(o.pharmacyPrice)||0;
+    
+    $id('orderActionTitle').innerText=type;
+    $id('orderActionSub').innerHTML=`<i class="far fa-clock"></i> ${timeStr} • ${custName}`;
+    const callBtn=$id('orderActionCallBtn');
+    if(phone)callBtn.href='tel:'+phone;
+    
+    let statusBadge='';
+    if(o.status==='active'){
+        statusBadge=`<span class="detail-status-badge detail-status-active"><i class="fas fa-motorcycle"></i> جاري التنفيذ</span>`;
+    }else if(o.status==='completed'){
+        statusBadge=`<span class="detail-status-badge detail-status-done"><i class="fas fa-check-double"></i> تم التسليم</span>`;
+    }
+    
+    let bodyHtml='';
+    
+    bodyHtml+=`<div class="detail-section">
+        <div class="detail-order-type">
+            <div class="detail-order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
+            <div class="detail-order-info">
+                <div class="detail-order-name">${type}</div>
+                <div class="detail-order-time"><i class="far fa-clock"></i> ${timeStr}</div>
+                ${statusBadge}
+            </div>
+        </div>
+    </div>`;
+    
+    bodyHtml+=`<div class="detail-section">
+        <div class="detail-section-title"><i class="fas fa-user"></i> معلومات أساسية</div>
+        <div class="detail-info-row">
+            <div class="detail-info-icon"><i class="fas fa-user"></i></div>
+            <div class="detail-info-content">
+                <div class="detail-info-label">العميل</div>
+                <div class="detail-info-value">${custName}</div>
+            </div>
+        </div>
+        <div class="detail-info-row">
+            <div class="detail-info-icon"><i class="fas fa-phone"></i></div>
+            <div class="detail-info-content">
+                <div class="detail-info-label">رقم الموبايل</div>
+                <div class="detail-info-value phone">${phone||'-'}</div>
+            </div>
+            ${phone?`<a href="tel:${phone}" class="detail-info-action"><i class="fas fa-phone"></i></a>`:''}
+        </div>
+        <div class="detail-info-row">
+            <div class="detail-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="detail-info-content">
+                <div class="detail-info-label">العنوان</div>
+                <div class="detail-info-value">${address}</div>
+            </div>
+        </div>
+    </div>`;
+    
+    // ✅ صندوق السعر — بيجمع التوصيل + سعر الصيدلية لو موجود
+    let totalPrice=price;
+    if(pharmacyPrice>0 && getOrderFilterType(o)==='pharma')totalPrice=pharmacyPrice;
+    
+    bodyHtml+=`<div class="detail-price-box">
+        <div class="detail-price-label">💰 السعر الإجمالي</div>
+        <div class="detail-price-value"><span class="price-num">${totalPrice.toFixed(0)}</span><span class="price-unit">ج</span></div>
+        ${commission>0?`<div class="detail-price-commission"><span>عمولتك:</span> <b>${commission.toFixed(0)} ج</b></div>`:''}
+    </div>`;
+    
+    const filterType=getOrderFilterType(o);
+    let contentBtnText='';
+    let contentBtnIcon='';
+    if(filterType==='market'){
+        contentBtnText=`إظهار المنتجات (${o.items?o.items.length:0})`;
+        contentBtnIcon='fa-shopping-basket';
+    }else if(filterType==='pharma'){
+        contentBtnText='إظهار الروشتة';
+        contentBtnIcon='fa-file-prescription';
+    }else{
+        contentBtnText='إظهار تفاصيل الطلب';
+        contentBtnIcon='fa-list';
+    }
+    bodyHtml+=`<button class="detail-btn detail-btn-details" onclick="openContentSheet('${orderId}')" style="width:100%">
+        <i class="fas ${contentBtnIcon}"></i> ${contentBtnText}
+    </button>`;
+    
+    $id('orderActionBody').innerHTML=bodyHtml;
+    
+    // ✅ إظهار/إخفاء صندوق انتظار الصيدلية
+    updatePharmacyBox(orderId,o);
+    
+    const buttons=$id('orderActionButtons');
+    let buttonsHtml='';
+    if(o.status==='active' && o.driverKey===driverData.key){
+        const isPharma=filterType==='pharma';
+        const hasPrice=pharmacyPrice>0;
+        const canFinish=!isPharma || hasPrice;
+        
+        buttonsHtml=`<a href="tel:${phone}" class="detail-btn detail-btn-call"><i class="fas fa-phone"></i> اتصال بالعميل</a>`;
+        
+        if(canFinish){
+            buttonsHtml+=`<button class="detail-btn detail-btn-finish" onclick="finishOrderFromAction('${orderId}')">
+                <i class="fas fa-check-double"></i> إنهاء الطلب
+            </button>`;
+        }else{
+            buttonsHtml+=`<button class="detail-btn" style="background:rgba(245,158,11,.2);color:#fbbf24;border:1.5px solid rgba(245,158,11,.5);cursor:not-allowed" disabled>
+                <i class="fas fa-hourglass-half"></i> في انتظار سعر الصيدلية
+            </button>`;
+        }
+    }
+    if(buttonsHtml){
+        buttons.classList.remove('empty');
+        buttons.innerHTML=buttonsHtml;
+    }else{
+        buttons.classList.add('empty');
+        buttons.innerHTML='';
+    }
+    
+    $id('orderActionScreen').classList.add('show');
+    document.body.style.overflow='hidden';
+}
+
+function closeOrderActions(){
+    $id('orderActionScreen').classList.remove('show');
+    document.body.style.overflow='';
+    currentActionOrderId=null;
+}
+
+function finishOrderFromAction(orderId){
+    closeOrderActions();
+    setTimeout(()=>finishOrder(orderId),300);
+}
+
+/* ============ Bottom Sheet ============ */
+function openContentSheet(orderId){
+    const o=allOrdersCache[orderId];
+    if(!o)return;
+    
+    const filterType=getOrderFilterType(o);
+    
+    if(filterType==='pharma' && o.hasRx && o.rxImage){
+        closeContentSheet();
+        setTimeout(()=>{openImageViewer(o.rxImage,'روشتة الصيدلية');},200);
+        return;
+    }
+    
+    const sheetIcon=$id('contentSheetIcon');
+    const sheetTitle=$id('contentSheetTitle');
+    const sheetSub=$id('contentSheetSub');
+    const sheetBody=$id('contentSheetBody');
+    
+    let bodyHtml='';
+    
+    if(filterType==='market'){
+        sheetIcon.style.background='linear-gradient(135deg,#f59e0b,#d97706)';
+        sheetIcon.innerHTML='<i class="fas fa-shopping-basket"></i>';
+        sheetTitle.innerText='المنتجات المطلوبة';
+        sheetSub.innerText=`${o.items?o.items.length:0} منتج`;
+        
+        if(o.items && o.items.length > 0){
+            bodyHtml='<div class="detail-items-list">';
+            o.items.forEach(item=>{
+                const itemImg=item.image?`<img src="${item.image}" alt="${item.name}" onclick="openImageViewer('${item.image}','${item.name.replace(/'/g,"\\'")}')">`:`<i class="fas fa-image"></i>`;
+                const itemTotal=(Number(item.price)*item.qty).toFixed(0);
+                bodyHtml+=`<div class="detail-item-row">
+                    <div class="detail-item-img">${itemImg}</div>
+                    <div class="detail-item-info">
+                        <div class="detail-item-name">${item.name}</div>
+                        <div class="detail-item-meta">الكمية: <b>${item.qty}</b> • السعر: <b>${item.price} ج</b></div>
+                    </div>
+                    <div class="detail-item-price">${itemTotal} ج<small>الإجمالي</small></div>
+                </div>`;
+            });
+            bodyHtml+='</div>';
+        }else{
+            bodyHtml='<div class="empty-state"><i class="fas fa-shopping-basket"></i><p>لا توجد منتجات</p></div>';
+        }
+    }
+    else{
+        sheetIcon.style.background='linear-gradient(135deg,#10b981,#059669)';
+        sheetIcon.innerHTML='<i class="fas fa-list"></i>';
+        sheetTitle.innerText='تفاصيل الطلب';
+        sheetSub.innerText='كل التفاصيل';
+        
+        if(o.details){
+            bodyHtml=`<div class="detail-text-content">${o.details}</div>`;
+        }else{
+            bodyHtml='<div class="empty-state"><i class="fas fa-list"></i><p>لا توجد تفاصيل</p></div>';
+        }
+        
+        if(o.notes){
+            bodyHtml+=`<div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)">
+                <div class="detail-info-label" style="margin-bottom:6px">📝 ملاحظات العميل</div>
+                <div class="detail-text-content" style="font-size:12.5px">${o.notes}</div>
+            </div>`;
+        }
+    }
+    
+    sheetBody.innerHTML=bodyHtml;
+    $id('contentSheetOverlay').classList.add('show');
+    $id('contentSheet').classList.add('show');
+}
+
+function closeContentSheet(){
+    $id('contentSheetOverlay').classList.remove('show');
+    $id('contentSheet').classList.remove('show');
+}
+
+/* ============ Image Viewer ============ */
+function openImageViewer(src,label){
+    $id('imageViewerImg').src=src;
+    $id('imageViewerTitle').innerText='عرض الصورة';
+    $id('imageViewerCaption').innerText=label||'';
+    $id('imageViewerScreen').classList.add('show');
+}
+function closeImageViewer(){
+    $id('imageViewerScreen').classList.remove('show');
+    setTimeout(()=>{$id('imageViewerImg').src='';},400);
+}
+function openInNativeGallery(){
+    const img=$id('imageViewerImg');
+    if(!img||!img.src)return;
+    fetch(img.src)
+        .then(r=>r.blob())
+        .then(blob=>{
+            const url=URL.createObjectURL(blob);
+            const a=document.createElement('a');
+            a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.click();
+            setTimeout(()=>URL.revokeObjectURL(url),3000);
+        })
+        .catch(()=>{window.open(img.src,'_blank');});
+}
+
+/* ============ ألوان وأيقونات ============ */
+function getOrderColor(type){
+    if(!type)return '#8b5cf6';
+    if(type.includes('مشوار'))return '#8b5cf6';
+    if(type.includes('ماركت'))return '#f59e0b';
+    if(type.includes('صيدلية'))return '#06b6d4';
+    if(type.includes('خضار'))return '#10b981';
+    if(type.includes('شحنة'))return '#0ea5e9';
+    if(type.includes('حاجة')||type.includes('مخصصة'))return '#a855f7';
+    return '#8b5cf6';
+}
+function getOrderIcon(type){
+    if(!type)return 'fa-box';
+    if(type.includes('مشوار'))return 'fa-motorcycle';
+    if(type.includes('ماركت'))return 'fa-shopping-basket';
+    if(type.includes('صيدلية'))return 'fa-pills';
+    if(type.includes('خضار'))return 'fa-carrot';
+    if(type.includes('شحنة'))return 'fa-shipping-fast';
+    if(type.includes('حاجة')||type.includes('مخصصة'))return 'fa-magic';
+    return 'fa-box';
+}
+
+/* ============ الرسائل الإدارية ============ */
+function listenToAdminMessages(){
+    if(!driverData || !driverData.area)return;
+    adminMsgsCache={};
+    
+    db.ref(`admin_messages/${driverData.area}`).on('value',snap=>{
+        adminMsgsCache={};
+        const now=Date.now();
+        const clean=driverData.phone.replace(/\D/g,'');
+        const closedMsgs=getClosedMsgs();
+        let hasNew=false;
+        
+        snap.forEach(c=>{
+            const m=c.val();
+            if(!m)return;
+            if(m.expiresAt && now > m.expiresAt)return;
+            if(m.targetType==='single' && m.targetDriver!==clean)return;
+            if(closedMsgs.includes(c.key))return;
+            adminMsgsCache[c.key]={id:c.key,...m};
+            if(!m._shown){hasNew=true;m._shown=true;}
+        });
+        
+        displayAdminMessage();
+        if(hasNew)playAdminMsgSound();
+    });
+}
+
+function getClosedMsgs(){
+    try{
+        const raw=localStorage.getItem('closed_admin_msgs_'+driverData.phone);
+        if(!raw)return [];
+        const arr=JSON.parse(raw);
+        const now=Date.now();
+        return arr.filter(x=>x.time && (now-x.time) < 7*24*60*60*1000).map(x=>x.id);
+    }catch(e){return [];}
+}
+function saveClosedMsg(id){
+    try{
+        const key='closed_admin_msgs_'+driverData.phone;
+        const raw=localStorage.getItem(key);
+        let arr=raw?JSON.parse(raw):[];
+        arr=arr.filter(x=>x.id!==id);
+        arr.push({id,time:Date.now()});
+        localStorage.setItem(key,JSON.stringify(arr));
+    }catch(e){}
+}
+function displayAdminMessage(){
+    const ids=Object.keys(adminMsgsCache);
+    const banner=$id('adminMsgBanner');
+    const textEl=$id('adminMsgText');
+    if(ids.length===0){banner.style.display='none';return;}
+    const first=adminMsgsCache[ids[0]];
+    textEl.innerText=first.text||'';
+    banner.style.display='flex';
+}
+function closeAdminMessage(){
+    const ids=Object.keys(adminMsgsCache);
+    if(ids.length===0)return;
+    const first=adminMsgsCache[ids[0]];
+    saveClosedMsg(first.id);
+    delete adminMsgsCache[first.id];
+    displayAdminMessage();
+}
+function playAdminMsgSound(){
+    const sound=$id('adminMsgSound');
+    if(!sound)return;
+    const ids=Object.keys(adminMsgsCache);
+    if(ids.length===0)return;
+    const first=adminMsgsCache[ids[0]];
+    if(first.sound && first.sound.trim()!=='')sound.src=first.sound;
+    sound.currentTime=0;
+    sound.play().catch(()=>{});
+    if(navigator.vibrate)navigator.vibrate([150,80,150]);
+}
+
+/* ============ عرض الطلبات ============ */
 function renderOrders(){
-    const newOrders = getOrdersByStatus('new');
-    const activeOrders = getOrdersByStatus('active');
-    const historyOrders = getOrdersByStatus('history');
-    const newContainer = $id('newOrdersContainer');
+    const newOrders=getOrdersByStatus('new');
+    const activeOrders=getOrdersByStatus('active');
+    const historyOrders=getOrdersByStatus('history');
+    
+    renderFilterTabs();
+    
+    const newContainer=$id('newOrdersContainer');
     if(newContainer){
         if(hasReachedMaxOrders()){
-            const type = getDriverType();
-            const maxOrders = getMaxOrders();
-            const activeCount = getActiveOrdersCount();
-            const typeLabel = type === 'tuktuk' ? 'طلب' : 'طلبات';
-            newContainer.innerHTML = `<div class="empty-state" style="padding:40px 20px"><i class="fas fa-hourglass-half" style="color:#fbbf24"></i><p style="color:#fbbf24;font-weight:900">⏳ وصلت للحد الأقصى</p><p style="font-size:13px;margin-top:8px;color:var(--text-soft)">عندك <b style="color:#fff">${activeCount}</b> من <b style="color:#fff">${maxOrders}</b> ${typeLabel}</p><p style="font-size:11px;margin-top:6px;color:var(--text-dim)">خلّص طلب عشان تشوف طلبات جديدة</p></div>`;
+            const type=getDriverType();
+            const maxOrders=getMaxOrders();
+            const activeCount=getActiveOrdersCount();
+            const typeLabel=type==='tuktuk'?'طلب':'طلبات';
+            newContainer.innerHTML=`<div class="empty-state" style="padding:40px 20px"><i class="fas fa-hourglass-half" style="color:#fbbf24"></i><p style="color:#fbbf24;font-weight:900">⏳ وصلت للحد الأقصى</p><p style="font-size:13px;margin-top:8px;color:var(--text-soft)">عندك <b style="color:#fff">${activeCount}</b> من <b style="color:#fff">${maxOrders}</b> ${typeLabel}</p><p style="font-size:11px;margin-top:6px;color:var(--text-dim)">خلّص طلب عشان تشوف طلبات جديدة</p></div>`;
         }else{
-            newContainer.innerHTML = newOrders.length > 0
+            newContainer.innerHTML=newOrders.length>0
                 ? newOrders.map(o=>renderNewOrderCard(o)).join('')
                 : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-bell-slash"></i><p>لا توجد طلبات جديدة دلوقتي</p><p style="font-size:11px;margin-top:8px;color:var(--text-dim)">استنى شوية، ممكن يوصلك طلب قريب</p></div>';
         }
     }
-    const activeContainer = $id('activeOrdersContainer');
+    
+    const activeContainer=$id('activeOrdersContainer');
     if(activeContainer){
-        activeContainer.innerHTML = activeOrders.length > 0
+        activeContainer.innerHTML=activeOrders.length>0
             ? activeOrders.map(o=>renderActiveOrderCard(o)).join('')
             : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-motorcycle"></i><p>لا توجد طلبات جارية</p></div>';
     }
-    const historyContainer = $id('historyOrdersContainer');
+    
+    const historyContainer=$id('historyOrdersContainer');
     if(historyContainer){
-        historyContainer.innerHTML = historyOrders.length > 0
+        historyContainer.innerHTML=historyOrders.length>0
             ? historyOrders.map(o=>renderHistoryOrderCard(o)).join('')
             : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-archive"></i><p>لا يوجد أرشيف بعد</p></div>';
     }
-    const cnt = $id('newOrdersCount');
-    if(cnt)cnt.innerText = newOrders.length;
-    const badge = $id('badgeHome');
+    
+    const cnt=$id('newOrdersCount');
+    if(cnt)cnt.innerText=newOrders.length;
+    const badge=$id('badgeHome');
     if(badge){
-        if(newOrders.length > 0){
-            badge.innerText = newOrders.length;
+        if(newOrders.length>0){
+            badge.innerText=newOrders.length;
             badge.classList.remove('hidden');
         }else{
             badge.classList.add('hidden');
         }
     }
-    const notifBadge = $id('notifBadge');
+    const notifBadge=$id('notifBadge');
     if(notifBadge){
-        if(newOrders.length > 0){
-            notifBadge.innerText = newOrders.length;
+        if(newOrders.length>0){
+            notifBadge.innerText=newOrders.length;
             notifBadge.classList.remove('hidden');
         }else{
             notifBadge.classList.add('hidden');
         }
     }
-    const notifBtn = $id('notifBtn');
+    const notifBtn=$id('notifBtn');
     if(notifBtn){
-        if(newOrders.length > 0)notifBtn.classList.add('has-new');
+        if(newOrders.length>0)notifBtn.classList.add('has-new');
         else notifBtn.classList.remove('has-new');
     }
 }
 
-function getOrderColor(type){
-    if(type.includes('مشوار'))return '#8b5cf6';
-    if(type.includes('ماركت'))return '#f59e0b';
-    if(type.includes('صيدلية'))return '#06b6d4';
-    if(type.includes('خضار'))return '#10b981';
-    if(type.includes('طرد'))return '#ec4899';
-    return '#8b5cf6';
-}
-function getOrderIcon(type){
-    if(type.includes('مشوار'))return 'fa-motorcycle';
-    if(type.includes('ماركت'))return 'fa-shopping-basket';
-    if(type.includes('صيدلية'))return 'fa-pills';
-    if(type.includes('خضار'))return 'fa-carrot';
-    if(type.includes('طرد'))return 'fa-box-open';
-    return 'fa-box';
+function buildImagesPreviewHtml(o){
+    let images=[];
+    if(o.hasRx&&o.rxImage)images.push({src:o.rxImage,label:'الروشتة'});
+    if(o.items&&o.items.length>0){
+        o.items.forEach(item=>{
+            if(item.image&&item.image.trim()!=='')images.push({src:item.image,label:item.name});
+        });
+    }
+    if(images.length===0)return '';
+    const maxShow=3;
+    let html='<div class="order-images-preview">';
+    images.slice(0,maxShow).forEach(img=>{
+        const safeLabel=img.label.replace(/'/g,"\\'");
+        html+=`<div class="order-preview-img" onclick="event.stopPropagation();openImageViewer('${img.src}','${safeLabel}')"><img src="${img.src}" alt=""></div>`;
+    });
+    if(images.length>maxShow){
+        html+=`<div class="order-preview-count">+${images.length-maxShow}</div>`;
+    }
+    html+='</div>';
+    return html;
 }
 
+/* ============ كارت الطلب الجديد ============ */
 function renderNewOrderCard(o){
-    const type = o.type || 'طلب';
-    const color = getOrderColor(type);
-    const icon = getOrderIcon(type);
-    const price = Number(o.price) || 0;
-    const timeStr = o.orderTimeString || formatTime(o.time);
-    const custName = o.customerName || o.name || 'عميل';
-    let detailsHtml = '';
-    if(type.includes('مشوار') || type.includes('طرد')){
-        detailsHtml = `
+    const type=o.type||'طلب';
+    const color=getOrderColor(type);
+    const icon=getOrderIcon(type);
+    const price=Number(o.price)||0;
+    const timeStr=o.orderTimeString||formatTime(o.time);
+    const custName=o.customerName||o.name||'عميل';
+    const filterType=getOrderFilterType(o);
+    
+    let detailsHtml='';
+    if(filterType==='trip'){
+        detailsHtml=`
             <div class="order-detail-row"><i class="fas fa-flag-checkered"></i><span>الوجهة: <b>${o.to||'غير محدد'}</b></span></div>
             <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>من: <b>${o.from||o.customerArea||'غير محدد'}</b></span></div>
         `;
+    }else if(filterType==='shipping'){
+        detailsHtml=`
+            <div class="order-detail-row"><i class="fas fa-flag-checkered"></i><span>إلى: <b>${o.toAddr||o.to||'-'}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-home"></i><span>من: <b>${o.fromAddr||o.from||'-'}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-box"></i><span>المحتويات: <b>${o.details||'-'}</b></span></div>
+        `;
     }else{
-        detailsHtml = `
+        detailsHtml=`
             <div class="order-detail-row"><i class="fas fa-list"></i><span>تفاصيل: <b>${o.details||'-'}</b></span></div>
             <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>عنوان: <b>${o.to||'-'}</b></span></div>
         `;
     }
-    return `
-        <div class="order-card new-order" style="--oc:${color}">
-            <div class="order-top">
-                <div class="order-type-block">
-                    <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
-                    <div class="order-info">
-                        <div class="order-type-name">${type}</div>
-                        <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
-                    </div>
-                </div>
-                <div class="order-price-big">
-                    <div class="order-price-num">${price}</div>
-                    <div class="order-price-label">ج.م</div>
+    
+    const imagesHtml=buildImagesPreviewHtml(o);
+    
+    return `<div class="order-card new-order" style="--oc:${color}">
+        <div class="order-top">
+            <div class="order-type-block">
+                <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
+                <div class="order-info">
+                    <div class="order-type-name">${type}</div>
+                    <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
                 </div>
             </div>
-            ${detailsHtml}
-            <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b></span></div>
-            <button class="btn-action btn-accept" onclick="acceptOrder('${o.id}')">
-                <i class="fas fa-check-circle"></i> اقبل الطلب
-            </button>
+            <div class="order-price-big">
+                <div class="order-price-num">${price}</div>
+                <div class="order-price-label">ج.م</div>
+            </div>
         </div>
-    `;
+        ${detailsHtml}
+        <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b></span></div>
+        ${imagesHtml}
+        <button class="btn-action btn-accept" onclick="acceptOrder('${o.id}')">
+            <i class="fas fa-check-circle"></i> اقبل الطلب
+        </button>
+    </div>`;
 }
 
+/* ============ كارت الطلب الجاري ============ */
 function renderActiveOrderCard(o){
-    const type = o.type || 'طلب';
-    const color = getOrderColor(type);
-    const icon = getOrderIcon(type);
-    const price = Number(o.price) || 0;
-    const timeStr = o.orderTimeString || formatTime(o.time);
-    const phone = o.customerPhone || o.phone || '';
-    const custName = o.customerName || o.name || 'عميل';
-    let detailsHtml = '';
-    if(type.includes('مشوار') || type.includes('طرد')){
-        detailsHtml = `
+    const type=o.type||'طلب';
+    const color=getOrderColor(type);
+    const icon=getOrderIcon(type);
+    const price=Number(o.price)||0;
+    const timeStr=o.orderTimeString||formatTime(o.time);
+    const phone=o.customerPhone||o.phone||'';
+    const custName=o.customerName||o.name||'عميل';
+    const filterType=getOrderFilterType(o);
+    
+    let detailsHtml='';
+    if(filterType==='trip'){
+        detailsHtml=`
             <div class="order-detail-row"><i class="fas fa-flag-checkered"></i><span>الوجهة: <b>${o.to||'غير محدد'}</b></span></div>
             <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>من: <b>${o.from||o.customerArea||'-'}</b></span></div>
         `;
+    }else if(filterType==='shipping'){
+        detailsHtml=`
+            <div class="order-detail-row"><i class="fas fa-flag-checkered"></i><span>إلى: <b>${o.toAddr||o.to||'-'}</b></span></div>
+            <div class="order-detail-row"><i class="fas fa-home"></i><span>من: <b>${o.fromAddr||o.from||'-'}</b></span></div>
+        `;
     }else{
-        detailsHtml = `
+        detailsHtml=`
             <div class="order-detail-row"><i class="fas fa-list"></i><span>تفاصيل: <b>${o.details||'-'}</b></span></div>
             <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>عنوان: <b>${o.to||'-'}</b></span></div>
         `;
     }
-    return `
-        <div class="order-card" style="--oc:${color}">
-            <div class="order-top">
-                <div class="order-type-block">
-                    <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
-                    <div class="order-info">
-                        <div class="order-type-name">${type}</div>
-                        <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
-                    </div>
+    
+    const imagesHtml=buildImagesPreviewHtml(o);
+    
+    // ✅ لو صيدلية ومفيش سعر
+    const isPharma=filterType==='pharma';
+    const hasPrice=o.pharmacyPrice && Number(o.pharmacyPrice)>0;
+    let waitingBadge='';
+    if(isPharma && !hasPrice){
+        waitingBadge=`<div style="background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(239,68,68,.12));border:1px dashed rgba(245,158,11,.5);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:11px;color:#fbbf24;font-weight:800;text-align:center"><i class="fas fa-hourglass-half"></i> في انتظار سعر الصيدلية</div>`;
+    }else if(isPharma && hasPrice){
+        waitingBadge=`<div style="background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(6,182,212,.1));border:1px solid rgba(16,185,129,.4);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:11px;color:#34d399;font-weight:800;text-align:center"><i class="fas fa-check-circle"></i> سعر الصيدلية: ${Number(o.pharmacyPrice).toFixed(0)} ج</div>`;
+    }
+    
+    return `<div class="order-card" style="--oc:${color}" onclick="openOrderActions('${o.id}')">
+        <div class="order-top">
+            <div class="order-type-block">
+                <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
+                <div class="order-info">
+                    <div class="order-type-name">${type}</div>
+                    <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
                 </div>
-                <span class="status-badge status-active"><i class="fas fa-motorcycle"></i> جارية</span>
             </div>
-            ${detailsHtml}
-            <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b> • ${phone}</span></div>
-            <div class="order-detail-row"><i class="fas fa-money-bill-wave"></i><span>السعر: <b style="color:var(--success)">${price} ج</b></span></div>
-            <div class="order-actions">
-                <a href="tel:${phone}" class="btn-action btn-call"><i class="fas fa-phone"></i> اتصال بالعميل</a>
-                <button class="btn-action btn-finish" onclick="finishOrder('${o.id}')">
-                    <i class="fas fa-check-double"></i> إنهاء الطلب
-                </button>
-            </div>
+            <span class="status-badge status-active"><i class="fas fa-motorcycle"></i> جارية</span>
         </div>
-    `;
+        ${detailsHtml}
+        <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b> • ${phone}</span></div>
+        <div class="order-detail-row"><i class="fas fa-money-bill-wave"></i><span>السعر: <b style="color:var(--success)">${price} ج</b></span></div>
+        ${imagesHtml}
+        ${waitingBadge}
+        <div class="order-tap-hint"><i class="fas fa-hand-pointer"></i> اضغط لعرض التفاصيل</div>
+        <div class="order-actions">
+            <a href="tel:${phone}" class="btn-action btn-call" onclick="event.stopPropagation()"><i class="fas fa-phone"></i> اتصال بالعميل</a>
+            <button class="btn-action btn-finish" onclick="event.stopPropagation();finishOrder('${o.id}')">
+                <i class="fas fa-check-double"></i> إنهاء الطلب
+            </button>
+        </div>
+    </div>`;
 }
 
+/* ============ كارت الأرشيف ============ */
 function renderHistoryOrderCard(o){
-    const type = o.type || 'طلب';
-    const color = getOrderColor(type);
-    const icon = getOrderIcon(type);
-    const price = Number(o.price) || 0;
-    const timeStr = o.orderTimeString || formatTime(o.time);
-    const custName = o.customerName || o.name || 'عميل';
-    return `
-        <div class="order-card" style="--oc:${color}">
-            <div class="order-top">
-                <div class="order-type-block">
-                    <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
-                    <div class="order-info">
-                        <div class="order-type-name">${type}</div>
-                        <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
-                    </div>
+    const type=o.type||'طلب';
+    const color=getOrderColor(type);
+    const icon=getOrderIcon(type);
+    const price=Number(o.price)||0;
+    const timeStr=o.orderTimeString||formatTime(o.time);
+    const custName=o.customerName||o.name||'عميل';
+    
+    return `<div class="order-card" style="--oc:${color}" onclick="openOrderActions('${o.id}')">
+        <div class="order-top">
+            <div class="order-type-block">
+                <div class="order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
+                <div class="order-info">
+                    <div class="order-type-name">${type}</div>
+                    <div class="order-time-small"><i class="far fa-clock"></i> ${timeStr}</div>
                 </div>
-                <span class="status-badge status-done"><i class="fas fa-check"></i> مكتملة</span>
             </div>
-            <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b></span></div>
-            <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>الوجهة: <b>${o.to||'-'}</b></span></div>
-            <div class="order-detail-row"><i class="fas fa-money-bill-wave"></i><span>السعر: <b style="color:var(--success)">${price} ج</b></span></div>
+            <span class="status-badge status-done"><i class="fas fa-check"></i> مكتملة</span>
         </div>
-    `;
+        <div class="order-detail-row"><i class="fas fa-user"></i><span>العميل: <b>${custName}</b></span></div>
+        <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>الوجهة: <b>${o.to||o.toAddr||'-'}</b></span></div>
+        <div class="order-detail-row"><i class="fas fa-money-bill-wave"></i><span>السعر: <b style="color:var(--success)">${price} ج</b></span></div>
+        <div class="order-tap-hint"><i class="fas fa-hand-pointer"></i> اضغط لعرض التفاصيل</div>
+    </div>`;
 }
 
+/* ============ قبول الطلب ============ */
 function acceptOrder(id){
-    const o = allOrdersCache[id];
+    const o=allOrdersCache[id];
     if(!o)return;
     if(hasReachedMaxOrders()){
-        const maxOrders = getMaxOrders();
-        const typeLabel = getDriverType() === 'tuktuk' ? 'طلب' : 'طلبات';
+        const maxOrders=getMaxOrders();
+        const typeLabel=getDriverType()==='tuktuk'?'طلب':'طلبات';
         showToast(`⚠️ وصلت للحد الأقصى (${maxOrders} ${typeLabel})`,'error');
         return;
     }
@@ -994,12 +1680,13 @@ function acceptOrder(id){
             return;
         }
         db.ref('orders/'+id).update({
-            status: 'active',
-            driverKey: driverData.key,
-            driverName: driverData.name,
-            driverPhone: driverData.phone,
-            driverRole: driverData.role,
-            acceptedAt: Date.now()
+            status:'active',
+            driverKey:driverData.key,
+            driverName:driverData.name,
+            driverPhone:driverData.phone,
+            driverRole:driverData.role,
+            acceptedAt:Date.now(),
+            driverAcceptedAt:Date.now()
         }).then(()=>{
             showSuccess('تم القبول! ✅','الطلب اتنقل لطلباتك الجارية.');
         }).catch(e=>{
@@ -1008,13 +1695,25 @@ function acceptOrder(id){
     });
 }
 
+/* ============ إنهاء الطلب ============ */
 function finishOrder(id){
-    const o = allOrdersCache[id];
+    const o=allOrdersCache[id];
     if(!o)return;
+    
+    // ✅ منع الإنهاء لطلب صيدلية بدون سعر
+    const filterType=getOrderFilterType(o);
+    const isPharma=filterType==='pharma';
+    const hasPrice=o.pharmacyPrice && Number(o.pharmacyPrice)>0;
+    
+    if(isPharma && !hasPrice){
+        showToast('⏳ لازم تستنى سعر الصيدلية الأول','error');
+        return;
+    }
+    
     showConfirm('fa-check-double','إنهاء الطلب','هل وصلت للعميل وسلّمت الطلب؟',()=>{
         db.ref('orders/'+id).update({
-            status: 'completed',
-            completedAt: Date.now()
+            status:'completed',
+            completedAt:Date.now()
         }).then(()=>{
             showSuccess('تم التسليم! 🎉','الطلب اتمم واتضاف لمحفظتك.');
         }).catch(e=>{
@@ -1023,80 +1722,84 @@ function finishOrder(id){
     });
 }
 
+/* ============ تحديث الإحصائيات ============ */
 function updateStats(){
-    const today = new Date();today.setHours(0,0,0,0);
-    const todayTime = today.getTime();
-    let todayCount = 0;
-    let completedCount = 0;
+    const today=new Date();today.setHours(0,0,0,0);
+    const todayTime=today.getTime();
+    let todayCount=0;
+    let completedCount=0;
     Object.keys(allOrdersCache).forEach(id=>{
-        const o = allOrdersCache[id];
+        const o=allOrdersCache[id];
         if(!o)return;
-        if(o.driverKey !== driverData.key && o.driverPhone !== driverData.phone)return;
-        if(o.time && o.time >= todayTime)todayCount++;
-        if(o.status === 'completed')completedCount++;
+        if(o.driverKey!==driverData.key&&o.driverPhone!==driverData.phone)return;
+        if(o.time&&o.time>=todayTime)todayCount++;
+        if(o.status==='completed')completedCount++;
     });
-    const t1 = $id('statTodayOrders');
-    const t2 = $id('statCompleted');
-    if(t1)t1.innerText = todayCount;
-    if(t2)t2.innerText = completedCount;
+    const t1=$id('statTodayOrders');
+    const t2=$id('statCompleted');
+    if(t1)t1.innerText=todayCount;
+    if(t2)t2.innerText=completedCount;
 }
 
+/* ============ تحديث المحفظة ============ */
 function updateWallet(){
-    let earned = 0;
-    let commission = 0;
-    let ordersCount = 0;
+    let earned=0;
+    let commission=0;
+    let ordersCount=0;
     Object.keys(allOrdersCache).forEach(id=>{
-        const o = allOrdersCache[id];
+        const o=allOrdersCache[id];
         if(!o)return;
-        if(o.driverKey !== driverData.key && o.driverPhone !== driverData.phone)return;
-        if(o.status !== 'completed' && o.status !== 'archived')return;
-        const price = Number(o.price) || 0;
-        earned += price;
+        if(o.driverKey!==driverData.key&&o.driverPhone!==driverData.phone)return;
+        if(o.status!=='completed'&&o.status!=='archived')return;
+        const price=Number(o.price)||0;
+        earned+=price;
         ordersCount++;
-        const rawComm = Number(o.commission);
-        const orderComm = (!isNaN(rawComm) && o.commission !== undefined) ? rawComm : (price*10)/100;
-        commission += orderComm;
+        const rawComm=Number(o.commission);
+        const orderComm=(!isNaN(rawComm)&&o.commission!==undefined)?rawComm:(price*10)/100;
+        commission+=orderComm;
     });
-    const settled = Number(driverData.settledDebt) || 0;
-    const debt = Math.max(0, commission - settled);
-    const w1 = $id('walletMiniValue');
-    const w2 = $id('walletBigValue');
-    const w3 = $id('walletOrdersCount');
-    const w4 = $id('walletDebt');
-    if(w1)w1.innerText = Math.round(earned);
-    if(w2)w2.innerText = Math.round(earned);
-    if(w3)w3.innerText = ordersCount;
-    if(w4)w4.innerText = Math.round(debt)+' ج';
+    const settled=Number(driverData.settledDebt)||0;
+    const debt=Math.max(0,commission-settled);
+    const w1=$id('walletMiniValue');
+    const w2=$id('walletBigValue');
+    const w3=$id('walletOrdersCount');
+    const w4=$id('walletDebt');
+    if(w1)w1.innerText=Math.round(earned);
+    if(w2)w2.innerText=Math.round(earned);
+    if(w3)w3.innerText=ordersCount;
+    if(w4)w4.innerText=Math.round(debt)+' ج';
 }
 
+/* ============ تنبيه الطلبات الجديدة ============ */
 function checkNewOrdersAlert(){
-    const newOrders = getOrdersByStatus('new');
-    const count = newOrders.length;
-    if(count > lastNewOrdersCount && lastNewOrdersCount >= 0){
-        const sound = $id('alertSound');
+    const newOrders=getOrdersByStatus('new');
+    const count=newOrders.length;
+    if(count>lastNewOrdersCount&&lastNewOrdersCount>=0){
+        const sound=$id('alertSound');
         if(sound){
-            sound.currentTime = 0;
+            sound.currentTime=0;
             sound.play().catch(()=>{});
         }
         if(navigator.vibrate)navigator.vibrate([200,100,200]);
-        if(count > lastNewOrdersCount){
+        if(count>lastNewOrdersCount){
             showToast(`🔔 عندك ${count} طلب جديد!`,'success');
         }
-        if(document.hidden && 'Notification' in window && Notification.permission === 'granted'){
+        if(document.hidden&&'Notification' in window&&Notification.permission==='granted'){
             try{
                 new Notification('🛵 طلب جديد',{
-                    body: `عندك ${count} طلب في انتظارك`,
-                    icon: 'https://cdn-icons-png.flaticon.com/512/3063/3063822.png',
-                    tag: 'new-order-'+Date.now(),
-                    requireInteraction: true,
-                    vibrate: [200,100,200]
+                    body:`عندك ${count} طلب في انتظارك`,
+                    icon:'https://cdn-icons-png.flaticon.com/512/3063/3063822.png',
+                    tag:'new-order-'+Date.now(),
+                    requireInteraction:true,
+                    vibrate:[200,100,200]
                 });
             }catch(e){console.log('Notif error:',e);}
         }
     }
-    lastNewOrdersCount = count;
+    lastNewOrdersCount=count;
 }
 
+/* ============ تسجيل الخروج ============ */
 function logout(){
     showConfirm('fa-sign-out-alt','تسجيل الخروج','هل أنت متأكد إنك عايز تخرج من حسابك؟',()=>{
         localStorage.removeItem('driver_data');
@@ -1104,6 +1807,7 @@ function logout(){
     });
 }
 
+/* ============ حدث الرجوع للتطبيق ============ */
 document.addEventListener('visibilitychange',()=>{
     if(!document.hidden){
         renderOrders();
@@ -1114,3 +1818,4 @@ document.addEventListener('visibilitychange',()=>{
 </script>
 </body>
 </html>
+</script>
