@@ -5,9 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>سائق مشوار</title>
 <meta name="theme-color" content="#8b5cf6">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="سائق مشوار">
+<meta name="application-name" content="سائق مشوار">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3063/3063822.png">
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3063/3063822.png">
+<link rel="apple-touch-icon" href="./logo.png">
+<link rel="icon" type="image/png" href="./logo.png">
+<link rel="shortcut icon" type="image/png" href="./logo.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
@@ -226,6 +232,27 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
 .admin-msg-close{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
 .admin-msg-close:active{transform:scale(.92);background:rgba(239,68,68,.4);border-color:rgba(239,68,68,.6)}
 
+/* ══════════ INSTALL BANNER (TOP FIXED) ══════════ */
+.install-banner-top{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#8b5cf6,#06b6d4);z-index:99999;padding:0;transform:translateY(-100%);transition:transform .5s cubic-bezier(.16,1,.3,1);box-shadow:0 8px 30px rgba(139,92,246,.5);border-bottom:2px solid rgba(255,255,255,.2)}
+.install-banner-top.show{transform:translateY(0)}
+.install-banner-inner{max-width:600px;margin:0 auto;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.install-banner-icon{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.9);border:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:installPulse 2s infinite;object-fit:contain;padding:2px;color:#7c3aed;font-size:20px}
+@keyframes installPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.install-banner-text{flex:1;min-width:0}
+.install-banner-title{font-size:13px;font-weight:900;color:#fff;margin-bottom:2px}
+.install-banner-sub{font-size:10.5px;color:rgba(255,255,255,.9);font-weight:600}
+.install-banner-btn{padding:9px 14px;background:#fff;border:none;border-radius:11px;color:#7c3aed;font-weight:900;font-size:12.5px;cursor:pointer;font-family:'Cairo',sans-serif;flex-shrink:0;box-shadow:0 6px 15px rgba(0,0,0,.2);transition:.2s;display:flex;align-items:center;gap:6px;justify-content:center;min-width:80px}
+.install-banner-btn:active{transform:scale(.95)}
+.install-banner-btn.loading{pointer-events:none;opacity:.85}
+.install-banner-close{width:30px;height:30px;border-radius:9px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.install-banner-close:active{transform:scale(.9)}
+@media(max-width:360px){
+    .install-banner-icon{width:38px;height:38px}
+    .install-banner-title{font-size:11.5px}
+    .install-banner-sub{font-size:9.5px}
+    .install-banner-btn{padding:8px 11px;font-size:11px;min-width:70px}
+}
+
 /* ============ PHARMACY WAITING BOX ============ */
 .pharmacy-waiting-box{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(239,68,68,.12));border:1.5px dashed rgba(245,158,11,.6);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;margin-top:12px;animation:pulseWaitBox 2s infinite}
 @keyframes pulseWaitBox{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.3)}50%{box-shadow:0 0 0 8px rgba(245,158,11,0)}}
@@ -271,6 +298,8 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
 .screen-header-info{flex:1;min-width:0}
 .screen-header-title{font-size:16px;font-weight:900;color:#fff;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .screen-header-sub{font-size:11.5px;color:rgba(255,255,255,.8);margin-top:2px;display:flex;align-items:center;gap:6px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.detail-call-btn{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-decoration:none;transition:.2s;box-shadow:0 6px 15px rgba(37,211,102,.4)}
+.detail-call-btn:active{transform:scale(.92)}
 
 /* ============ DETAIL SECTIONS ============ */
 .detail-section{background:linear-gradient(160deg,rgba(30,41,59,.7),rgba(15,23,42,.9));border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px;position:relative;overflow:hidden}
@@ -499,7 +528,7 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
         <div class="section" style="margin-top:20px;text-align:center">
             <div style="font-size:11px;color:var(--text-dim);line-height:1.8">
                 <div style="font-weight:900;color:var(--text-muted);margin-bottom:4px">سائق مشوار</div>
-                <div>بوابة السائق • v1.7</div>
+                <div>بوابة السائق • v1.8</div>
                 <div style="margin-top:6px">تصميم وِدّ</div>
             </div>
         </div>
@@ -890,7 +919,6 @@ function listenToOrders(){
         updateStats();
         updateWallet();
         checkNewOrdersAlert();
-        // ✅ تحديث شاشة الطلب لو مفتوحة
         if(currentActionOrderId && allOrdersCache[currentActionOrderId]){
             updateOrderActionScreen(currentActionOrderId);
         }
@@ -955,7 +983,7 @@ function renderFilterTabs(){
     const newOrders=getOrdersByStatus('new');
     const activeOrders=getOrdersByStatus('active');
     const historyOrders=getOrdersByStatus('history');
-    
+
     function buildTabsHtml(orders){
         let html='';
         filters.forEach(f=>{
@@ -970,7 +998,7 @@ function renderFilterTabs(){
         });
         return html;
     }
-    
+
     if(homeTabs)homeTabs.innerHTML=buildTabsHtml(newOrders);
     if(ordersTabs){
         const source=activeOrdersTab==='active'?activeOrders:historyOrders;
@@ -1028,22 +1056,19 @@ function getOrdersByStatus(status){
     return list;
 }
 
-/* ============ تحديث شاشة الطلب بدون إغلاقها ============ */
 function updateOrderActionScreen(orderId){
     const o=allOrdersCache[orderId];
     if(!o)return;
-    // ✅ تحديث صندوق انتظار الصيدلية
     updatePharmacyBox(orderId,o);
-    // ✅ تحديث زر الإنهاء
     const buttons=$id('orderActionButtons');
     if(buttons && o.status==='active' && o.driverKey===driverData.key){
         const phone=o.customerPhone||o.phone||'';
         const isPharma=getOrderFilterType(o)==='pharma';
         const hasPrice=o.pharmacyPrice && Number(o.pharmacyPrice)>0;
         const canFinish=!isPharma || hasPrice;
-        
+
         let buttonsHtml=`<a href="tel:${phone}" class="detail-btn detail-btn-call"><i class="fas fa-phone"></i> اتصال بالعميل</a>`;
-        
+
         if(canFinish){
             buttonsHtml+=`<button class="detail-btn detail-btn-finish" onclick="finishOrderFromAction('${orderId}')">
                 <i class="fas fa-check-double"></i> إنهاء الطلب
@@ -1058,23 +1083,22 @@ function updateOrderActionScreen(orderId){
     }
 }
 
-/* ============ عرض صندوق انتظار الصيدلية ============ */
 function updatePharmacyBox(orderId,o){
     const waitingBox=$id('pharmacyWaitingBox');
     const priceBadge=$id('pharmacyPriceBadge');
     const priceValue=$id('pharmacyPriceValue');
-    
+
     if(!waitingBox||!priceBadge)return;
-    
+
     const isPharma=getOrderFilterType(o)==='pharma';
     const hasPrice=o.pharmacyPrice && Number(o.pharmacyPrice)>0;
-    
+
     if(!isPharma){
         waitingBox.style.display='none';
         priceBadge.style.display='none';
         return;
     }
-    
+
     if(hasPrice){
         waitingBox.style.display='none';
         priceBadge.style.display='flex';
@@ -1085,18 +1109,17 @@ function updatePharmacyBox(orderId,o){
     }
 }
 
-/* ============ شاشة الطلب الجاري ============ */
 function openOrderActions(orderId){
     const o=allOrdersCache[orderId];
     if(!o)return;
-    
+
     if(o.status==='ready_for_driver'){
         showToast('اقبل الطلب الأول عشان تشوف التفاصيل','info');
         return;
     }
-    
+
     currentActionOrderId=orderId;
-    
+
     const type=o.type||'طلب';
     const color=getOrderColor(type);
     const icon=getOrderIcon(type);
@@ -1107,21 +1130,21 @@ function openOrderActions(orderId){
     const timeStr=o.orderTimeString||formatTime(o.time);
     const address=o.to||o.toAddr||'-';
     const pharmacyPrice=Number(o.pharmacyPrice)||0;
-    
+
     $id('orderActionTitle').innerText=type;
     $id('orderActionSub').innerHTML=`<i class="far fa-clock"></i> ${timeStr} • ${custName}`;
     const callBtn=$id('orderActionCallBtn');
     if(phone)callBtn.href='tel:'+phone;
-    
+
     let statusBadge='';
     if(o.status==='active'){
         statusBadge=`<span class="detail-status-badge detail-status-active"><i class="fas fa-motorcycle"></i> جاري التنفيذ</span>`;
     }else if(o.status==='completed'){
         statusBadge=`<span class="detail-status-badge detail-status-done"><i class="fas fa-check-double"></i> تم التسليم</span>`;
     }
-    
+
     let bodyHtml='';
-    
+
     bodyHtml+=`<div class="detail-section">
         <div class="detail-order-type">
             <div class="detail-order-icon" style="background:${color}"><i class="fas ${icon}"></i></div>
@@ -1132,7 +1155,7 @@ function openOrderActions(orderId){
             </div>
         </div>
     </div>`;
-    
+
     bodyHtml+=`<div class="detail-section">
         <div class="detail-section-title"><i class="fas fa-user"></i> معلومات أساسية</div>
         <div class="detail-info-row">
@@ -1158,17 +1181,16 @@ function openOrderActions(orderId){
             </div>
         </div>
     </div>`;
-    
-    // ✅ صندوق السعر — بيجمع التوصيل + سعر الصيدلية لو موجود
+
     let totalPrice=price;
     if(pharmacyPrice>0 && getOrderFilterType(o)==='pharma')totalPrice=pharmacyPrice;
-    
+
     bodyHtml+=`<div class="detail-price-box">
         <div class="detail-price-label">💰 السعر الإجمالي</div>
         <div class="detail-price-value"><span class="price-num">${totalPrice.toFixed(0)}</span><span class="price-unit">ج</span></div>
         ${commission>0?`<div class="detail-price-commission"><span>عمولتك:</span> <b>${commission.toFixed(0)} ج</b></div>`:''}
     </div>`;
-    
+
     const filterType=getOrderFilterType(o);
     let contentBtnText='';
     let contentBtnIcon='';
@@ -1185,21 +1207,20 @@ function openOrderActions(orderId){
     bodyHtml+=`<button class="detail-btn detail-btn-details" onclick="openContentSheet('${orderId}')" style="width:100%">
         <i class="fas ${contentBtnIcon}"></i> ${contentBtnText}
     </button>`;
-    
+
     $id('orderActionBody').innerHTML=bodyHtml;
-    
-    // ✅ إظهار/إخفاء صندوق انتظار الصيدلية
+
     updatePharmacyBox(orderId,o);
-    
+
     const buttons=$id('orderActionButtons');
     let buttonsHtml='';
     if(o.status==='active' && o.driverKey===driverData.key){
         const isPharma=filterType==='pharma';
         const hasPrice=pharmacyPrice>0;
         const canFinish=!isPharma || hasPrice;
-        
+
         buttonsHtml=`<a href="tel:${phone}" class="detail-btn detail-btn-call"><i class="fas fa-phone"></i> اتصال بالعميل</a>`;
-        
+
         if(canFinish){
             buttonsHtml+=`<button class="detail-btn detail-btn-finish" onclick="finishOrderFromAction('${orderId}')">
                 <i class="fas fa-check-double"></i> إنهاء الطلب
@@ -1217,7 +1238,7 @@ function openOrderActions(orderId){
         buttons.classList.add('empty');
         buttons.innerHTML='';
     }
-    
+
     $id('orderActionScreen').classList.add('show');
     document.body.style.overflow='hidden';
 }
@@ -1233,32 +1254,31 @@ function finishOrderFromAction(orderId){
     setTimeout(()=>finishOrder(orderId),300);
 }
 
-/* ============ Bottom Sheet ============ */
 function openContentSheet(orderId){
     const o=allOrdersCache[orderId];
     if(!o)return;
-    
+
     const filterType=getOrderFilterType(o);
-    
+
     if(filterType==='pharma' && o.hasRx && o.rxImage){
         closeContentSheet();
         setTimeout(()=>{openImageViewer(o.rxImage,'روشتة الصيدلية');},200);
         return;
     }
-    
+
     const sheetIcon=$id('contentSheetIcon');
     const sheetTitle=$id('contentSheetTitle');
     const sheetSub=$id('contentSheetSub');
     const sheetBody=$id('contentSheetBody');
-    
+
     let bodyHtml='';
-    
+
     if(filterType==='market'){
         sheetIcon.style.background='linear-gradient(135deg,#f59e0b,#d97706)';
         sheetIcon.innerHTML='<i class="fas fa-shopping-basket"></i>';
         sheetTitle.innerText='المنتجات المطلوبة';
         sheetSub.innerText=`${o.items?o.items.length:0} منتج`;
-        
+
         if(o.items && o.items.length > 0){
             bodyHtml='<div class="detail-items-list">';
             o.items.forEach(item=>{
@@ -1283,13 +1303,13 @@ function openContentSheet(orderId){
         sheetIcon.innerHTML='<i class="fas fa-list"></i>';
         sheetTitle.innerText='تفاصيل الطلب';
         sheetSub.innerText='كل التفاصيل';
-        
+
         if(o.details){
             bodyHtml=`<div class="detail-text-content">${o.details}</div>`;
         }else{
             bodyHtml='<div class="empty-state"><i class="fas fa-list"></i><p>لا توجد تفاصيل</p></div>';
         }
-        
+
         if(o.notes){
             bodyHtml+=`<div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)">
                 <div class="detail-info-label" style="margin-bottom:6px">📝 ملاحظات العميل</div>
@@ -1297,7 +1317,7 @@ function openContentSheet(orderId){
             </div>`;
         }
     }
-    
+
     sheetBody.innerHTML=bodyHtml;
     $id('contentSheetOverlay').classList.add('show');
     $id('contentSheet').classList.add('show');
@@ -1308,7 +1328,6 @@ function closeContentSheet(){
     $id('contentSheet').classList.remove('show');
 }
 
-/* ============ Image Viewer ============ */
 function openImageViewer(src,label){
     $id('imageViewerImg').src=src;
     $id('imageViewerTitle').innerText='عرض الصورة';
@@ -1333,7 +1352,6 @@ function openInNativeGallery(){
         .catch(()=>{window.open(img.src,'_blank');});
 }
 
-/* ============ ألوان وأيقونات ============ */
 function getOrderColor(type){
     if(!type)return '#8b5cf6';
     if(type.includes('مشوار'))return '#8b5cf6';
@@ -1355,18 +1373,17 @@ function getOrderIcon(type){
     return 'fa-box';
 }
 
-/* ============ الرسائل الإدارية ============ */
 function listenToAdminMessages(){
     if(!driverData || !driverData.area)return;
     adminMsgsCache={};
-    
+
     db.ref(`admin_messages/${driverData.area}`).on('value',snap=>{
         adminMsgsCache={};
         const now=Date.now();
         const clean=driverData.phone.replace(/\D/g,'');
         const closedMsgs=getClosedMsgs();
         let hasNew=false;
-        
+
         snap.forEach(c=>{
             const m=c.val();
             if(!m)return;
@@ -1376,7 +1393,7 @@ function listenToAdminMessages(){
             adminMsgsCache[c.key]={id:c.key,...m};
             if(!m._shown){hasNew=true;m._shown=true;}
         });
-        
+
         displayAdminMessage();
         if(hasNew)playAdminMsgSound();
     });
@@ -1430,14 +1447,13 @@ function playAdminMsgSound(){
     if(navigator.vibrate)navigator.vibrate([150,80,150]);
 }
 
-/* ============ عرض الطلبات ============ */
 function renderOrders(){
     const newOrders=getOrdersByStatus('new');
     const activeOrders=getOrdersByStatus('active');
     const historyOrders=getOrdersByStatus('history');
-    
+
     renderFilterTabs();
-    
+
     const newContainer=$id('newOrdersContainer');
     if(newContainer){
         if(hasReachedMaxOrders()){
@@ -1452,21 +1468,21 @@ function renderOrders(){
                 : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-bell-slash"></i><p>لا توجد طلبات جديدة دلوقتي</p><p style="font-size:11px;margin-top:8px;color:var(--text-dim)">استنى شوية، ممكن يوصلك طلب قريب</p></div>';
         }
     }
-    
+
     const activeContainer=$id('activeOrdersContainer');
     if(activeContainer){
         activeContainer.innerHTML=activeOrders.length>0
             ? activeOrders.map(o=>renderActiveOrderCard(o)).join('')
             : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-motorcycle"></i><p>لا توجد طلبات جارية</p></div>';
     }
-    
+
     const historyContainer=$id('historyOrdersContainer');
     if(historyContainer){
         historyContainer.innerHTML=historyOrders.length>0
             ? historyOrders.map(o=>renderHistoryOrderCard(o)).join('')
             : '<div class="empty-state" style="padding:40px 20px"><i class="fas fa-archive"></i><p>لا يوجد أرشيف بعد</p></div>';
     }
-    
+
     const cnt=$id('newOrdersCount');
     if(cnt)cnt.innerText=newOrders.length;
     const badge=$id('badgeHome');
@@ -1516,7 +1532,6 @@ function buildImagesPreviewHtml(o){
     return html;
 }
 
-/* ============ كارت الطلب الجديد ============ */
 function renderNewOrderCard(o){
     const type=o.type||'طلب';
     const color=getOrderColor(type);
@@ -1525,7 +1540,7 @@ function renderNewOrderCard(o){
     const timeStr=o.orderTimeString||formatTime(o.time);
     const custName=o.customerName||o.name||'عميل';
     const filterType=getOrderFilterType(o);
-    
+
     let detailsHtml='';
     if(filterType==='trip'){
         detailsHtml=`
@@ -1544,9 +1559,9 @@ function renderNewOrderCard(o){
             <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>عنوان: <b>${o.to||'-'}</b></span></div>
         `;
     }
-    
+
     const imagesHtml=buildImagesPreviewHtml(o);
-    
+
     return `<div class="order-card new-order" style="--oc:${color}">
         <div class="order-top">
             <div class="order-type-block">
@@ -1570,7 +1585,6 @@ function renderNewOrderCard(o){
     </div>`;
 }
 
-/* ============ كارت الطلب الجاري ============ */
 function renderActiveOrderCard(o){
     const type=o.type||'طلب';
     const color=getOrderColor(type);
@@ -1580,7 +1594,7 @@ function renderActiveOrderCard(o){
     const phone=o.customerPhone||o.phone||'';
     const custName=o.customerName||o.name||'عميل';
     const filterType=getOrderFilterType(o);
-    
+
     let detailsHtml='';
     if(filterType==='trip'){
         detailsHtml=`
@@ -1598,10 +1612,9 @@ function renderActiveOrderCard(o){
             <div class="order-detail-row"><i class="fas fa-map-marker-alt"></i><span>عنوان: <b>${o.to||'-'}</b></span></div>
         `;
     }
-    
+
     const imagesHtml=buildImagesPreviewHtml(o);
-    
-    // ✅ لو صيدلية ومفيش سعر
+
     const isPharma=filterType==='pharma';
     const hasPrice=o.pharmacyPrice && Number(o.pharmacyPrice)>0;
     let waitingBadge='';
@@ -1610,7 +1623,7 @@ function renderActiveOrderCard(o){
     }else if(isPharma && hasPrice){
         waitingBadge=`<div style="background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(6,182,212,.1));border:1px solid rgba(16,185,129,.4);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:11px;color:#34d399;font-weight:800;text-align:center"><i class="fas fa-check-circle"></i> سعر الصيدلية: ${Number(o.pharmacyPrice).toFixed(0)} ج</div>`;
     }
-    
+
     return `<div class="order-card" style="--oc:${color}" onclick="openOrderActions('${o.id}')">
         <div class="order-top">
             <div class="order-type-block">
@@ -1637,7 +1650,6 @@ function renderActiveOrderCard(o){
     </div>`;
 }
 
-/* ============ كارت الأرشيف ============ */
 function renderHistoryOrderCard(o){
     const type=o.type||'طلب';
     const color=getOrderColor(type);
@@ -1645,7 +1657,7 @@ function renderHistoryOrderCard(o){
     const price=Number(o.price)||0;
     const timeStr=o.orderTimeString||formatTime(o.time);
     const custName=o.customerName||o.name||'عميل';
-    
+
     return `<div class="order-card" style="--oc:${color}" onclick="openOrderActions('${o.id}')">
         <div class="order-top">
             <div class="order-type-block">
@@ -1664,7 +1676,6 @@ function renderHistoryOrderCard(o){
     </div>`;
 }
 
-/* ============ قبول الطلب ============ */
 function acceptOrder(id){
     const o=allOrdersCache[id];
     if(!o)return;
@@ -1695,21 +1706,19 @@ function acceptOrder(id){
     });
 }
 
-/* ============ إنهاء الطلب ============ */
 function finishOrder(id){
     const o=allOrdersCache[id];
     if(!o)return;
-    
-    // ✅ منع الإنهاء لطلب صيدلية بدون سعر
+
     const filterType=getOrderFilterType(o);
     const isPharma=filterType==='pharma';
     const hasPrice=o.pharmacyPrice && Number(o.pharmacyPrice)>0;
-    
+
     if(isPharma && !hasPrice){
         showToast('⏳ لازم تستنى سعر الصيدلية الأول','error');
         return;
     }
-    
+
     showConfirm('fa-check-double','إنهاء الطلب','هل وصلت للعميل وسلّمت الطلب؟',()=>{
         db.ref('orders/'+id).update({
             status:'completed',
@@ -1722,7 +1731,6 @@ function finishOrder(id){
     });
 }
 
-/* ============ تحديث الإحصائيات ============ */
 function updateStats(){
     const today=new Date();today.setHours(0,0,0,0);
     const todayTime=today.getTime();
@@ -1741,7 +1749,6 @@ function updateStats(){
     if(t2)t2.innerText=completedCount;
 }
 
-/* ============ تحديث المحفظة ============ */
 function updateWallet(){
     let earned=0;
     let commission=0;
@@ -1770,7 +1777,6 @@ function updateWallet(){
     if(w4)w4.innerText=Math.round(debt)+' ج';
 }
 
-/* ============ تنبيه الطلبات الجديدة ============ */
 function checkNewOrdersAlert(){
     const newOrders=getOrdersByStatus('new');
     const count=newOrders.length;
@@ -1799,7 +1805,6 @@ function checkNewOrdersAlert(){
     lastNewOrdersCount=count;
 }
 
-/* ============ تسجيل الخروج ============ */
 function logout(){
     showConfirm('fa-sign-out-alt','تسجيل الخروج','هل أنت متأكد إنك عايز تخرج من حسابك؟',()=>{
         localStorage.removeItem('driver_data');
@@ -1807,7 +1812,6 @@ function logout(){
     });
 }
 
-/* ============ حدث الرجوع للتطبيق ============ */
 document.addEventListener('visibilitychange',()=>{
     if(!document.hidden){
         renderOrders();
@@ -1815,7 +1819,203 @@ document.addEventListener('visibilitychange',()=>{
         updateWallet();
     }
 });
+
+/* ══════════ PWA SERVICE WORKER ══════════ */
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+    window.addEventListener('load',()=>{
+        navigator.serviceWorker.register('service-worker.js')
+            .then(reg=>console.log('✅ SW Registered'))
+            .catch(err=>console.log('SW Error:',err.message));
+    });
+}
+
+/* ══════════ PWA INSTALL PROMPT ══════════ */
+let deferredPrompt=null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallButton();
+});
+
+if(/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream){
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if(!localStorage.getItem('driver_install_dismissed')){
+                showInstallButton();
+            }
+        }, 3000);
+    });
+}
+
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        if(!deferredPrompt && !$id('installBanner')){
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if(!isStandalone && !localStorage.getItem('driver_install_dismissed')){
+                showInstallButton();
+            }
+        }
+    }, 2500);
+});
+
+function showInstallButton(){
+    if($id('installBanner')) return;
+    if(localStorage.getItem('driver_install_dismissed') === 'true') return;
+    if(window.matchMedia('(display-mode: standalone)').matches) return;
+    if(window.navigator.standalone === true) return;
+    
+    const banner = document.createElement('div');
+    banner.id = 'installBanner';
+    banner.className = 'install-banner-top';
+    banner.innerHTML = `
+        <div class="install-banner-inner">
+            <div class="install-banner-icon"><i class="fas fa-motorcycle"></i></div>
+            <div class="install-banner-text">
+                <div class="install-banner-title">📱 ثبّت تطبيق سائق مشوار</div>
+                <div class="install-banner-sub">افتحه بضغطة واحدة من الشاشة</div>
+            </div>
+            <button class="install-banner-btn" onclick="installPWA()">
+                <i class="fas fa-download"></i> ثبّت
+            </button>
+            <button class="install-banner-close" onclick="closeInstallBanner()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(banner);
+    setTimeout(() => { banner.classList.add('show'); }, 100);
+}
+
+function installPWA(){
+    const btn = document.querySelector('.install-banner-btn');
+    
+    if(deferredPrompt){
+        if(btn){
+            btn.classList.add('loading');
+            btn.innerHTML = 'جاري التثبيت';
+        }
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice) => {
+            if(choice.outcome === 'accepted'){
+                showToast('✅ تم تثبيت التطبيق!', 'success');
+                const b = $id('installBanner');
+                if(b){
+                    b.classList.remove('show');
+                    setTimeout(() => b.remove(), 500);
+                }
+                localStorage.setItem('driver_install_dismissed', 'true');
+            } else {
+                showToast('تم إلغاء التثبيت', 'info');
+                if(btn){
+                    btn.classList.remove('loading');
+                    btn.innerHTML = '<i class="fas fa-download"></i> ثبّت';
+                }
+            }
+            deferredPrompt = null;
+        });
+        return;
+    }
+    
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if(isIOS){
+        showIOSSmartInstall();
+        return;
+    }
+    
+    showSmartFallback();
+}
+
+function showIOSSmartInstall(){
+    const topToast = document.createElement('div');
+    topToast.id = 'iosTopToast';
+    topToast.style.cssText = `
+        position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);
+        background:linear-gradient(135deg,#8b5cf6,#06b6d4);color:#fff;
+        padding:14px 22px;border-radius:16px;font-size:13.5px;font-weight:900;
+        box-shadow:0 15px 40px rgba(139,92,246,.6);z-index:99999;
+        text-align:center;max-width:340px;line-height:1.7;
+        opacity:0;transition:all .4s cubic-bezier(.16,1,.3,1);
+        border:1px solid rgba(255,255,255,.25);
+    `;
+    topToast.innerHTML = `
+        <div style="font-size:14px;margin-bottom:6px">📱 ضغطة واحدة بس!</div>
+        <div style="font-size:12.5px;opacity:.95">اضغط زر <b>المشاركة</b> 
+            <i class="fas fa-share-square" style="font-size:14px"></i>
+        </div>
+        <div style="font-size:12px;opacity:.9;margin-top:4px">في شريط Safari تحت</div>
+    `;
+    document.body.appendChild(topToast);
+    setTimeout(() => {
+        topToast.style.opacity = '1';
+        topToast.style.transform = 'translateX(-50%) translateY(0)';
+    }, 50);
+    
+    const arrow = document.createElement('div');
+    arrow.id = 'iosArrow';
+    arrow.style.cssText = `
+        position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+        z-index:99999;color:#8b5cf6;font-size:32px;
+        animation:iosArrowBounce 1.2s infinite;
+        text-shadow:0 0 20px rgba(139,92,246,.8);
+        pointer-events:none;
+    `;
+    arrow.innerHTML = '<i class="fas fa-arrow-down"></i>';
+    document.body.appendChild(arrow);
+    
+    const arrowStyle = document.createElement('style');
+    arrowStyle.textContent = `@keyframes iosArrowBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-12px)}}`;
+    document.head.appendChild(arrowStyle);
+    
+    setTimeout(() => {
+        if(topToast.parentNode){
+            topToast.style.opacity = '0';
+            topToast.style.transform = 'translateX(-50%) translateY(-20px)';
+            setTimeout(() => topToast.remove(), 400);
+        }
+        if(arrow.parentNode) arrow.remove();
+    }, 6000);
+}
+
+function showSmartFallback(){
+    showToast('افتح القائمة (⋮) واختر "تثبيت التطبيق"', 'info');
+    setTimeout(() => {
+        const hint = document.createElement('div');
+        hint.style.cssText = `
+            position:fixed;bottom:100px;left:20px;
+            background:linear-gradient(135deg,#8b5cf6,#06b6d4);
+            color:#fff;padding:10px 14px;border-radius:14px;
+            font-size:12px;font-weight:800;z-index:99999;
+            box-shadow:0 10px 30px rgba(139,92,246,.5);
+            animation:hintPulse 1.5s infinite;
+        `;
+        hint.innerHTML = '<i class="fas fa-ellipsis-v"></i> القائمة هنا';
+        document.body.appendChild(hint);
+        const st = document.createElement('style');
+        st.textContent = '@keyframes hintPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}';
+        document.head.appendChild(st);
+        setTimeout(() => hint.remove(), 4000);
+    }, 1000);
+}
+
+function closeInstallBanner(){
+    const b = $id('installBanner');
+    if(b){
+        b.classList.remove('show');
+        setTimeout(() => b.remove(), 500);
+    }
+}
+
+window.addEventListener('appinstalled', () => {
+    showToast('🎉 تم تثبيت التطبيق!', 'success');
+    const b = $id('installBanner');
+    if(b){
+        b.classList.remove('show');
+        setTimeout(() => b.remove(), 500);
+    }
+    localStorage.setItem('driver_install_dismissed', 'true');
+    deferredPrompt = null;
+});
 </script>
 </body>
 </html>
-</script>
