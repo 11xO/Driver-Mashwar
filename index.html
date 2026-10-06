@@ -232,7 +232,7 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
 .admin-msg-close{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
 .admin-msg-close:active{transform:scale(.92);background:rgba(239,68,68,.4);border-color:rgba(239,68,68,.6)}
 
-/* ══════════ INSTALL BANNER (TOP FIXED) ══════════ */
+/* ══════════ INSTALL BANNER ══════════ */
 .install-banner-top{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#8b5cf6,#06b6d4);z-index:99999;padding:0;transform:translateY(-100%);transition:transform .5s cubic-bezier(.16,1,.3,1);box-shadow:0 8px 30px rgba(139,92,246,.5);border-bottom:2px solid rgba(255,255,255,.2)}
 .install-banner-top.show{transform:translateY(0)}
 .install-banner-inner{max-width:600px;margin:0 auto;padding:12px 14px;display:flex;align-items:center;gap:10px}
@@ -418,9 +418,9 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
         </div>
 
         <div class="wallet-mini" onclick="switchPage('wallet')">
-            <div class="wallet-mini-icon">💰</div>
+            <div class="wallet-mini-icon">💵</div>
             <div class="wallet-mini-info">
-                <div class="wallet-mini-label">إجمالي الأرباح</div>
+                <div class="wallet-mini-label">أرباح النهارده</div>
                 <div class="wallet-mini-value"><span id="walletMiniValue">0</span> <small>ج</small></div>
             </div>
             <i class="fas fa-chevron-left" style="color:rgba(255,255,255,.7);font-size:14px;position:relative;z-index:1"></i>
@@ -472,9 +472,9 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
             </div>
         </div>
         <div class="wallet-big-card">
-            <div class="wallet-big-label">إجمالي الأرباح</div>
+            <div class="wallet-big-label">💵 أرباح النهارده</div>
             <div class="wallet-big-value"><span id="walletBigValue">0</span> <small>ج</small></div>
-            <div class="wallet-big-note">💡 الرصيد بيزيد مع كل طلب مكتمل</div>
+            <div class="wallet-big-note">💡 بيتصفّر تلقائي كل يوم الساعة 12 بالليل</div>
         </div>
         <div class="wallet-row">
             <div class="wallet-row-icon" style="background:linear-gradient(135deg,#10b981,#059669)"><i class="fas fa-check-circle"></i></div>
@@ -528,7 +528,7 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
         <div class="section" style="margin-top:20px;text-align:center">
             <div style="font-size:11px;color:var(--text-dim);line-height:1.8">
                 <div style="font-weight:900;color:var(--text-muted);margin-bottom:4px">سائق مشوار</div>
-                <div>بوابة السائق • v1.9</div>
+                <div>بوابة السائق • v2.0</div>
                 <div style="margin-top:6px">تصميم وِدّ</div>
             </div>
         </div>
@@ -674,6 +674,13 @@ function formatTime(ts){
     const ap=h>=12?'مساءً':'صباحاً';
     h=h%12||12;
     return `${h}:${m} ${ap}`;
+}
+
+/* ══════════ حساب بداية اليوم (12 بالليل) ══════════ */
+function getStartOfToday(){
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    return start.getTime();
 }
 
 async function registerOneSignal(){
@@ -893,7 +900,7 @@ function startApp(){
     registerOneSignal();
 }
 
-/* ══════════ ✅ الاستماع لتحديثات السائق من Firebase (live) ══════════ */
+/* ══════════ الاستماع لتحديثات السائق من Firebase (live) ══════════ */
 function listenToDriverUpdates(){
     if(!driverData || !driverData.area || !driverData.key) return;
     db.ref(`providers/${driverData.area}/${driverData.key}`).on('value', snap => {
@@ -1745,16 +1752,18 @@ function finishOrder(id){
     });
 }
 
+/* ══════════ الإحصائيات ══════════ */
 function updateStats(){
-    const today=new Date();today.setHours(0,0,0,0);
-    const todayTime=today.getTime();
+    const startOfToday = getStartOfToday();
     let todayCount=0;
     let completedCount=0;
     Object.keys(allOrdersCache).forEach(id=>{
         const o=allOrdersCache[id];
         if(!o)return;
         if(o.driverKey!==driverData.key&&o.driverPhone!==driverData.phone)return;
-        if(o.time&&o.time>=todayTime)todayCount++;
+        // طلبات النهارده: اللي اتعملت بعد 12 بالليل
+        if(o.time&&o.time>=startOfToday)todayCount++;
+        // إجمالي المكتملة (من آخر تصفير)
         if(o.status==='completed')completedCount++;
     });
     const t1=$id('statTodayOrders');
@@ -1763,7 +1772,7 @@ function updateStats(){
     if(t2)t2.innerText=completedCount;
 }
 
-/* ══════════ ✅ دالة مساعدة: اقرأ settledDebt من Firebase ══════════ */
+/* ══════════ دالة مساعدة: اقرأ settledDebt من Firebase ══════════ */
 async function getSettledDebtFromFirebase(){
     if(!driverData || !driverData.area || !driverData.key) return 0;
     try {
@@ -1774,32 +1783,44 @@ async function getSettledDebtFromFirebase(){
     }
 }
 
-/* ══════════ ✅ تحديث المحفظة (async) ══════════ */
+/* ══════════ ✅ تحديث المحفظة (أرباح اليوم) ══════════ */
 async function updateWallet(){
-    let earned=0;
-    let commission=0;
-    let ordersCount=0;
+    const startOfToday = getStartOfToday(); // 12 بالليل بتوقيت الجهاز
+    
+    let earnedToday = 0;   // أرباح النهارده (بيتصفر تلقائي كل يوم)
+    let commission = 0;    // إجمالي العمولة (من آخر تصفير)
+    let ordersCount = 0;   // عدد التسليمات (من آخر تصفير)
+    
     Object.keys(allOrdersCache).forEach(id=>{
         const o=allOrdersCache[id];
         if(!o)return;
-        if(o.driverKey!==driverData.key&&o.driverPhone!==driverData.phone)return;
-        if(o.status!=='completed'&&o.status!=='archived')return;
-        const price=Number(o.price)||0;
-        earned+=price;
+        if(o.driverKey!==driverData.key && o.driverPhone!==driverData.phone)return;
+        if(o.status!=='completed' && o.status!=='archived')return;
+        
+        const price = Number(o.price)||0;
+        const rawComm = Number(o.commission);
+        const orderComm = (!isNaN(rawComm) && o.commission!==undefined) ? rawComm : (price*10)/100;
+        
+        /* ✅ أرباح النهارده: بس الطلبات اللي خلصت من 12 بالليل */
+        const orderTime = Number(o.completedAt || o.time || 0);
+        if(orderTime >= startOfToday){
+            earnedToday += price;
+        }
+        
+        /* ✅ العمولة والتسليمات: كل الطلبات (بتتصفر يدوياً من لوحة التحكم) */
+        commission += orderComm;
         ordersCount++;
-        const rawComm=Number(o.commission);
-        const orderComm=(!isNaN(rawComm)&&o.commission!==undefined)?rawComm:(price*10)/100;
-        commission+=orderComm;
     });
-    /* ✅ اقرأ settledDebt لايف من Firebase (مش من localStorage) */
+    
     const settled = await getSettledDebtFromFirebase();
     const debt = Math.max(0, commission - settled);
+    
     const w1=$id('walletMiniValue');
     const w2=$id('walletBigValue');
     const w3=$id('walletOrdersCount');
     const w4=$id('walletDebt');
-    if(w1)w1.innerText=Math.round(earned);
-    if(w2)w2.innerText=Math.round(earned);
+    if(w1)w1.innerText=Math.round(earnedToday);
+    if(w2)w2.innerText=Math.round(earnedToday);
     if(w3)w3.innerText=ordersCount;
     if(w4)w4.innerText=Math.round(debt)+' ج';
 }
