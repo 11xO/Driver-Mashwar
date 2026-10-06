@@ -528,7 +528,7 @@ body{background:#090d16;background-image:radial-gradient(circle at 10% 0%,rgba(1
         <div class="section" style="margin-top:20px;text-align:center">
             <div style="font-size:11px;color:var(--text-dim);line-height:1.8">
                 <div style="font-weight:900;color:var(--text-muted);margin-bottom:4px">سائق مشوار</div>
-                <div>بوابة السائق • v1.8</div>
+                <div>بوابة السائق • v1.9</div>
                 <div style="margin-top:6px">تصميم وِدّ</div>
             </div>
         </div>
@@ -888,8 +888,22 @@ function startApp(){
     updateNotifStatus();
     renderFilterTabs();
     listenToOrders();
+    listenToDriverUpdates();
     listenToAdminMessages();
     registerOneSignal();
+}
+
+/* ══════════ ✅ الاستماع لتحديثات السائق من Firebase (live) ══════════ */
+function listenToDriverUpdates(){
+    if(!driverData || !driverData.area || !driverData.key) return;
+    db.ref(`providers/${driverData.area}/${driverData.key}`).on('value', snap => {
+        const fresh = snap.val();
+        if(!fresh) return;
+        driverData = { ...driverData, ...fresh, key: driverData.key, area: driverData.area };
+        localStorage.setItem('driver_data', JSON.stringify(driverData));
+        updateWallet();
+        console.log('✅ Driver data synced. settledDebt =', fresh.settledDebt);
+    });
 }
 
 function switchPage(page){
@@ -1749,7 +1763,19 @@ function updateStats(){
     if(t2)t2.innerText=completedCount;
 }
 
-function updateWallet(){
+/* ══════════ ✅ دالة مساعدة: اقرأ settledDebt من Firebase ══════════ */
+async function getSettledDebtFromFirebase(){
+    if(!driverData || !driverData.area || !driverData.key) return 0;
+    try {
+        const snap = await db.ref(`providers/${driverData.area}/${driverData.key}/settledDebt`).once('value');
+        return Number(snap.val()) || 0;
+    } catch(e) {
+        return 0;
+    }
+}
+
+/* ══════════ ✅ تحديث المحفظة (async) ══════════ */
+async function updateWallet(){
     let earned=0;
     let commission=0;
     let ordersCount=0;
@@ -1765,8 +1791,9 @@ function updateWallet(){
         const orderComm=(!isNaN(rawComm)&&o.commission!==undefined)?rawComm:(price*10)/100;
         commission+=orderComm;
     });
-    const settled=Number(driverData.settledDebt)||0;
-    const debt=Math.max(0,commission-settled);
+    /* ✅ اقرأ settledDebt لايف من Firebase (مش من localStorage) */
+    const settled = await getSettledDebtFromFirebase();
+    const debt = Math.max(0, commission - settled);
     const w1=$id('walletMiniValue');
     const w2=$id('walletBigValue');
     const w3=$id('walletOrdersCount');
@@ -1864,7 +1891,7 @@ function showInstallButton(){
     if(localStorage.getItem('driver_install_dismissed') === 'true') return;
     if(window.matchMedia('(display-mode: standalone)').matches) return;
     if(window.navigator.standalone === true) return;
-    
+
     const banner = document.createElement('div');
     banner.id = 'installBanner';
     banner.className = 'install-banner-top';
@@ -1889,7 +1916,7 @@ function showInstallButton(){
 
 function installPWA(){
     const btn = document.querySelector('.install-banner-btn');
-    
+
     if(deferredPrompt){
         if(btn){
             btn.classList.add('loading');
@@ -1916,13 +1943,13 @@ function installPWA(){
         });
         return;
     }
-    
+
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if(isIOS){
         showIOSSmartInstall();
         return;
     }
-    
+
     showSmartFallback();
 }
 
@@ -1950,7 +1977,7 @@ function showIOSSmartInstall(){
         topToast.style.opacity = '1';
         topToast.style.transform = 'translateX(-50%) translateY(0)';
     }, 50);
-    
+
     const arrow = document.createElement('div');
     arrow.id = 'iosArrow';
     arrow.style.cssText = `
@@ -1962,11 +1989,11 @@ function showIOSSmartInstall(){
     `;
     arrow.innerHTML = '<i class="fas fa-arrow-down"></i>';
     document.body.appendChild(arrow);
-    
+
     const arrowStyle = document.createElement('style');
     arrowStyle.textContent = `@keyframes iosArrowBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-12px)}}`;
     document.head.appendChild(arrowStyle);
-    
+
     setTimeout(() => {
         if(topToast.parentNode){
             topToast.style.opacity = '0';
